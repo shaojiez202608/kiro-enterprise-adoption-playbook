@@ -1,0 +1,7 @@
+User name,Subscription status,Kiro plan,Plan source,Activation date
+user01@example.com,Active,Pro,Group,2026-01-02
+user02@example.com,Active,Pro,Group,2026-01-02
+user03@example.com,Active,Pro+,User,2026-01-03
+user04@example.com,Pending,Pro,Group,
+user05@example.com,Canceled,Pro,Group,2025-12-01
+user06@example.com,Active,Pro,Group,2026-01-05

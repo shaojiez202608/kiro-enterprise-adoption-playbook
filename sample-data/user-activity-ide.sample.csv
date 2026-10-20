@@ -1,0 +1,6 @@
+Date,UserId,Client_Type,Chat_Conversations,Credits_Used,Overage_Cap,Overage_Credits_Used,Overage_Enabled,ProfileId,Subscription_Tier,Total_Messages,New_User,User_Email,auto_messages
+2026-01-05,u-0001,KIRO_IDE,3,1.5,,0,false,profile-sample,Pro,40,false,user01@example.com,40
+2026-01-05,u-0003,KIRO_IDE,1,0.4,,0,false,profile-sample,ProPlus,12,false,user03@example.com,12
+2026-01-06,u-0001,KIRO_IDE,2,0.9,,0,false,profile-sample,Pro,25,false,user01@example.com,25
+2026-01-06,u-0005,KIRO_IDE,1,0.2,,0,false,profile-sample,Pro,6,false,user05@example.com,6
+2025-12-30,u-0002,KIRO_IDE,1,0.3,,0,false,profile-sample,Pro,8,false,user02@example.com,8
