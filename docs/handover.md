@@ -15,9 +15,10 @@
 
 ## 接手后先做
 
-1. 重新打开 `docs/architecture.md` 中的 F-xx 链接核对内容（官方文档更新频繁），并运行 `npm run check:links`。
-2. 处理 `OPEN-QUESTIONS.md`，尤其是 Q-01（Crew）、Q-02（订阅数量限制来源）、Q-04（导出表头）。
-3. 用真实（脱敏）表头试运行核对工具，确认关联键。
+1. 重新打开 `docs/architecture.md` 中的 F-xx 链接核对内容（官方文档更新频繁），并运行 `make verify`（lint、测试、链接）与 `make scan`。
+2. 把 `.github/CODEOWNERS` 中的 `@<MAINTAINER_GITHUB_HANDLE>` 换成真实账号（Q-13）。
+3. 处理 `OPEN-QUESTIONS.md`，尤其是 Q-01（Crew）、Q-02（订阅数量限制来源）、Q-04（导出表头）。
+4. 用真实（脱敏）表头试运行核对工具，确认关联键。
 
 ## 可删除资源策略
 
@@ -25,7 +26,7 @@
 
 ## 上生产前需要加固的清单
 
-- [ ] 把 `@playwright/mcp` 与 `@playwright/test` 版本纳入依赖审查与升级流程；在内部镜像源中缓存，避免直接从公网拉取。
+- [ ] 把 `@playwright/mcp` 与 `@playwright/test` 版本纳入依赖审查与升级流程；在内部镜像源中缓存，避免直接从公网拉取。Dependabot 只覆盖 `examples/frontend-demo/package.json` 与 GitHub Actions；`mcp.json` 中的 `@playwright/mcp` 版本不在任何清单文件里，需要人工跟进。
 - [ ] 评估是否为部分只读 MCP 工具开启 `autoApprove`，并写入团队规范（D-05）。
 - [ ] 在组织 MCP registry 中登记 Playwright MCP（若启用 registry，F-36）。
 - [ ] 把 hook 脚本中的测试命令替换为团队真实前端的测试命令，并保留重试上限。

@@ -4,10 +4,10 @@
 
 ## 部分 A：本机浏览器测试（无需 Kiro）
 
-1. `npm run setup:e2e`
+1. 按 `README.md` 的「Deploy / 部署」一节安装依赖。
 2. `npm --prefix examples/frontend-demo start`，浏览器打开 `http://127.0.0.1:4173/`，展示设备列表、状态筛选、维护记录表单。
 3. 打开 `http://127.0.0.1:4173/?simulate-error=1`，在开发者工具中展示控制台错误。
-4. 停止服务器，运行 `npm test`，展示单元测试与浏览器测试结果；说明「读控制台错误」测试会在模拟错误页面上确认检测有效。
+4. 停止服务器，运行 `make test`，展示单元测试与浏览器测试结果；说明「读控制台错误」测试会在模拟错误页面上确认检测有效。
 5. 展示 `examples/frontend-demo/test-results/` 中的截图附件（测试运行后生成，已在 `.gitignore` 中排除）。
 
 ## 部分 B：在 Kiro 中演示闭环

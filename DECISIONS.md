@@ -25,3 +25,22 @@
 | D-19 | 文档中官方没有写明的能力，写「官方未说明」，不写「当前不支持」 | 按需求输入的要求，做不到的一律写「当前不支持」 | 官方文档没有写某能力，不等于官方确认不支持；写「不支持」本身就是一条未核实的产品说法。官方明确写了不可用的（例如云端会话无 Supervised 模式、`.kiroignore` Web 尚不支持，F-13、F-40），照原文写「不可用 / 不支持」；试用期回复用户时，`runbook-activation-day.md` 第 3 节的「当前不支持」只用于这类官方明确的情况 |
 | D-20 | Stop hook 让 Playwright 复用端口上已运行的 dev server（`PW_REUSE_EXISTING_SERVER=1`） | hook 用另一个 `PORT` 启动独立服务器 | steering 让 agent 在 4173 上常驻 dev server，Playwright MCP 的 `--allowed-origins` 也固定为该地址；官方 dev servers 页说明同一命令同一目录的进程会被复用（F-09）。换端口会多启动一个服务器，并要求同步修改多处端口。代价：Playwright 只检查地址能否响应，端口上如果是别的程序，测试会对着它运行（`docs/deployment-guide.md` 参数表已注明） |
 | D-21 | 月度核对工具在输入不匹配时报错或以非零退出码结束，而不是照常输出 | 只在输出中提示 | 列名或关联键不对时，所有人都会被归为「有订阅无使用」或「有使用无订阅」，结果看起来正常但完全错误，可能导致错误停用订阅。缺列与 `--month` 无数据直接报错（退出码 2）；匹配率低仍输出结果便于排查，但退出码 3 |
+
+## 规范对齐轮（2026-10-21）
+
+以下决定按《AWS 原型项目通用规范》的统一决定执行；与上面的旧决定冲突时以这里为准。逐项对照见 `docs/standards-review.md`。
+
+| 编号 | 决定 | 备选 | 理由 |
+|---|---|---|---|
+| D-22 | LICENSE 为 MIT-0，版权行 `Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.`；git 作者保持 `shaojiez <shaojiez@example.invalid>` | 个人版权行 | aws-samples 惯例；测试检查版权行 |
+| D-23 | 漏洞上报只走 AWS 漏洞上报页面或 aws-security@amazon.com，不开公开 issue；SECURITY.md 写全部署内容、数据处理、控制与实现文件、注意事项、加固步骤、清理 | 只写上报方式 | 统一要求 |
+| D-24 | 账号 ID 占位一律 `111122223333`，其他占位 `<UPPER_SNAKE>`，主机名 `example.com`；内容规则测试只放行 `111122223333` 这一个 12 位数字 | `<ACCOUNT_ID>` | 统一要求；其他 12 位数字仍判失败 |
+| D-25 | 新增标配文件：CHANGELOG、VERSION、THIRD-PARTY-LICENSES、Makefile、AGENTS.md（CLAUDE.md 只写 `@AGENTS.md`）、CODEOWNERS、issue 与 PR 模板、CI、Dependabot、`.gitleaks.toml`。根目录 AGENTS.md 只是给维护本仓库的 AI 助手的说明；Kiro 也会读取 AGENTS.md（F-06），其中的边界同样适用 | 不加 | 统一要求 |
+| D-26 | 配置模板、`make init`、部署前输入校验、删除策略参数：不适用 | 为没有的部署造配置文件 | 没有 AWS 部署和部署配置；运行参数只有环境变量与命令行参数，已在代码中校验（`parseMaxAttempts`、核对工具 `parseArgs` 与列检查），集中列在 `docs/deployment-guide.md` 参数表 |
+| D-27 | `make preflight` 只检查本机工具链（Node、npm、git、示例依赖、浏览器缓存、gitleaks），只读；账号与区域确认、`ALLOW_DESTRUCTIVE`、`ALLOW_PAID`：不适用 | 照搬部署项目的预检 | 没有部署、没有 `cdk diff`；仓库中没有会产生 AWS 费用的命令。唯一访问 AWS 的 `make verify-cleanup` 是只读的，且不输出账号 ID |
+| D-28 | 服务角色信任策略、资源策略、cdk-nag：不适用 | — | 不创建任何 IAM 角色或资源 |
+| D-29 | CI 跑 lint、单元与集成测试、Playwright、链接检查、gitleaks 全历史 + canary；不设 synth/cdk-nag 与部署验证 workflow。gitleaks 直接下载官方发布的二进制并按官方 checksum 校验，不引入第三方 Action。canary 在临时目录中以 `gitleaks dir` 扫描，不提交 | 用 gitleaks Action；canary 写进一个临时 git 提交 | 少一个第三方 Action；本机的提交前 secret 检查会（正确地）拦下含假凭证的提交，目录扫描用同一配置即可证明规则能报出 |
+| D-30 | lint 用仓库自带的无依赖脚本（`tools/lint.mjs`：`node --check`、JSON 解析、行尾空白、制表符、文件末换行） | 引入 eslint | 不新增依赖；项目代码量小 |
+| D-31 | README 按规定顺序编排；安装与复制示例的命令只写在 README「Deploy / 部署」一节，`docs/deployment-guide.md`、`docs/demo-script.md`、`docs/cleanup.md` 改为引用 | 各文档各写一份 | 避免多处不一致；测试检查两份 README 的章节顺序 |
+| D-32 | 清理：`make clean`（两次确认、单步失败警告并继续）与 `make verify-cleanup`（只读，按前缀与标签、Kiro 支持的区域与 CLI 默认区域核对，有残留非零退出）。CDK bootstrap 资产清理：不适用 | — | 从未部署，没有属于本项目的 bootstrap 资产 |
+| D-33 | 提交主题：现有 17 个提交主题都已符合 Conventional Commits（`type: subject` 或 `type(scope): subject`）。为统一加上 scope 的 `git filter-repo --message-callback` 被本机权限拦下，按规则不重试；本轮没有重写历史，提交哈希保持稳定。本轮起新提交用带 scope 的写法，最后打 tag `v0.1.0` | 绕过权限强行重写 | 主题已符合规范，scope 是可选项；验证记录中的提交哈希因此有效 |

@@ -11,14 +11,9 @@
 | Kiro（仅在 Kiro 内使用示例时） | Kiro IDE 1.0 / Kiro CLI V3 及以上（新 hooks 格式，F-07）；组织未关闭 MCP（F-36）。Kiro CLI V1/V2 只自动载入 `inclusion: always` 的 steering，`fileMatch` 与 `manual` 不会自动载入（F-06），因此示例的前端验证 steering 在 V1/V2 中不会自动生效，需要升级到 V3 或手动引用 |
 | AWS | 不需要 |
 
-## 一条命令准备并运行全部测试
+## 安装与运行
 
-```bash
-npm run setup:e2e && npm test
-```
-
-- `setup:e2e`：安装 `examples/frontend-demo` 的开发依赖（`@playwright/test`，固定版本）并下载 Chromium 到 Playwright 默认缓存。不做全局安装。
-- `npm test`：先运行单元测试（配置格式、hook 脚本、核对工具、内容规则），再运行浏览器测试。
+安装、测试与把示例复制到练习仓库的命令只写在 `README.md` 的「Deploy / 部署」一节，本文不重复。本文只说明参数和目录结构。
 
 ## 参数
 
@@ -47,26 +42,14 @@ npm run setup:e2e && npm test
 └── frontend-demo/            # 换成你的前端目录时，同步修改 steering 的 fileMatchPattern、hook 脚本的 FRONTEND_DIR
 ```
 
-步骤：
-
-1. 复制上述文件到仓库根目录。
-2. 在 `frontend-demo/` 中运行 `npm install` 与 `npm run browsers:install`。
-3. 在 Kiro IDE 中确认 MCP 支持已启用、`playwright` 服务器已连接（F-01）。
-4. 按 `docs/demo-script.md` 演示。
+复制与安装步骤见 `README.md` 的「Deploy / 部署」一节；演示步骤见 `docs/demo-script.md`。
 
 注意：以上 Kiro 侧步骤依据官方文档编写，**未在 Kiro 内运行**。
 
 ## 月度核对工具
 
-```bash
-npm run reconcile:sample   # 合成数据
-node tools/reconcile-subscriptions.mjs --subscriptions <导出.csv> --activity <报告1.csv> <报告2.csv> --month YYYY-MM --format markdown
-```
+用法与退出码见 `runbook-activation-day.md` 第 4 节，参数见上表。
 
 ## 链接可达性检查（可选，需要联网）
 
-```bash
-npm run check:links
-```
-
-只检查文档中官方链接是否返回成功状态，不检查页面内容是否变化。
+`make links`（即 `npm run check:links`）只检查文档中官方链接是否返回成功状态，不检查页面内容是否变化。

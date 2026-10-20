@@ -7,6 +7,10 @@ blob-report/
 .DS_Store
 .env
 .env.*
+# Templates stay in the repository.
+!.env.example
+!*.example
+!*.example.*
 # Reconciliation output may contain user e-mail addresses; never commit it.
 reconcile-output*
 *.zip

@@ -1,0 +1,28 @@
+Third-party components
+======================
+
+This project does not re-license any third-party component. Each component remains under its own
+license. License identifiers below were taken from the package metadata in
+examples/frontend-demo/package-lock.json, from the npm registry metadata of the exact version, or from
+the upstream repository's LICENSE file (checked 2026-10-21).
+
+1. Distributed with this repository
+-----------------------------------
+
+None. The repository contains only original files. examples/frontend-demo/package-lock.json lists the
+dependencies below but does not contain their code.
+
+2. Downloaded at build, test or run time
+----------------------------------------
+
+| Component                | Version  | License        | When it is downloaded                                 | Source of the license information                 |
+|--------------------------|----------|----------------|-------------------------------------------------------|---------------------------------------------------|
+| @playwright/test         | 1.64.1   | Apache-2.0     | npm run setup:e2e (npm ci in examples/frontend-demo)  | package-lock.json and the package's package.json  |
+| playwright               | 1.64.1   | Apache-2.0     | same, dependency of @playwright/test                  | package-lock.json and the package's package.json  |
+| playwright-core          | 1.64.1   | Apache-2.0     | same, dependency of playwright                        | package-lock.json and the package's package.json  |
+| Chromium (Chrome for Testing and headless shell, revision 1248) | 156.0.8078.4 | BSD-3-Clause (Chromium project) | npm run setup:e2e (playwright install chromium) | LICENSE in the Chromium source repository; Playwright browsers.json for the revision |
+| @playwright/mcp          | 0.0.83   | Apache-2.0     | When Kiro starts the MCP server via npx (examples/.kiro/settings/mcp.json) | npm registry metadata for 0.0.83          |
+| playwright, playwright-core (pre-release builds required by @playwright/mcp 0.0.83) | 1.64.0-alpha | Apache-2.0 | same, dependencies of @playwright/mcp | npm registry metadata |
+
+Chromium bundles further third-party code under its own licenses; see the notices shipped with the
+browser download and the Playwright ThirdPartyNotices.txt in node_modules/playwright-core.

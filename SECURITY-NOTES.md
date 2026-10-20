@@ -12,9 +12,24 @@
 | Stop hook 脚本 | 在项目根目录运行 `git status` 与 `npm run test:e2e`，读取改动文件内容计算指纹 | 只在系统临时目录写重试计数文件；会话 ID 先做字符过滤，无会话 ID 时用工作区路径的哈希；计数文件损坏时忽略并重写；复用端口上已有的 dev server（见 `docs/deployment-guide.md` 的 `PW_REUSE_EXISTING_SERVER`） |
 | 核对工具 | 只读本地 CSV，输出到 stdout | 输出含用户邮箱，`.gitignore` 排除 `reconcile-output*`；不要提交真实导出 |
 
-## cdk-nag
+## cdk-nag 与 AWS 安全基线
 
-不适用：本项目没有 CDK 应用，因此没有 cdk-nag 规则与抑制项。
+不适用：本项目没有 CDK 应用，因此没有 cdk-nag 规则与抑制项。规范第六节的 AWS 安全基线逐项对照：
+
+| 类别 | 状态 | 理由 |
+|---|---|---|
+| S3、网络、IAM、服务角色信任策略（`aws:SourceAccount` + `aws:SourceArn`）、资源策略、数据加密与日志保留 | 不适用 | 不创建任何 AWS 资源（`DEPLOYMENT-LOG.md`） |
+| 身份只取自已验证身份 | 不适用 | 没有服务端；示例前端只提供静态文件，没有用户身份 |
+| 不可信输入交给 LLM | 适用，已处理 | `THREAT_MODEL.md`（Status: DRAFT）；硬约束在代码与配置中：MCP 来源限制、不自动批准、hook 只运行固定命令 |
+| 账号级设置 | 未修改 | 只做过只读查询（`make verify-cleanup`） |
+
+## 扫描配置与豁免
+
+| 配置 | 豁免 | 理由 |
+|---|---|---|
+| `.gitleaks.toml` | 无（只扩展默认规则） | 全部历史按默认规则扫描无发现 |
+| `tests/content-policy.test.mjs` 的 12 位数字检查 | 只放行 `111122223333` | 规范指定的账号 ID 占位值（D-24） |
+| 同一测试的金额检查 | 不检查 `*.sh` 与 `Makefile` | shell 脚本的位置参数（`$` 后跟数字）不是金额 |
 
 ## 已知风险
 

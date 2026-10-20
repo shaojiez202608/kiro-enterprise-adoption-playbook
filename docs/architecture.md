@@ -1,6 +1,8 @@
 # 架构、设计取舍与事实核对
 
 > Prototype，不用于生产。本文是仓库内所有产品事实的唯一来源；其他文档引用这里的编号（F-xx）。
+>
+> 对应版本：`v0.1.0`（git tag，`VERSION` 文件）。本文的 mermaid 图是架构的事实来源，README 中的简图从这里摘出。
 
 ## 1. 仓库组成
 
@@ -37,6 +39,35 @@ flowchart LR
     S --> F
     K -. agent 通过 MCP 打开页面 .-> F
 ```
+
+### 部署拓扑与信任边界
+
+没有 AWS 部署。所有组件都在开发者本机运行；唯一的网络出口是 Kiro 客户端自身的服务连接、`npx` 拉取 `@playwright/mcp`、首次安装时的 npm 与浏览器下载。
+
+```mermaid
+flowchart TB
+    subgraph Dev["开发者本机（信任边界内：开发者权限）"]
+        Kiro[Kiro IDE / CLI 本地会话]
+        Hook[Stop hook 命令<br/>scripts/kiro-ui-verify.mjs]
+        Suite[Playwright 测试套件]
+        MCP[Playwright MCP 进程<br/>npx @playwright/mcp 固定版本]
+        Demo[frontend-demo<br/>只监听 127.0.0.1]
+        Tool[reconcile-subscriptions.mjs<br/>只读本地 CSV]
+    end
+    subgraph Untrusted["不可信输入"]
+        Page[页面文本、控制台消息、截图]
+        Out[测试输出]
+    end
+    Svc[(Kiro 服务 / 模型)]
+    Kiro <--> Svc
+    Kiro --> MCP --> Demo
+    Demo --> Page --> Kiro
+    Kiro -. 回合结束 .-> Hook --> Suite --> Demo
+    Suite --> Out --> Hook
+    Hook -->|stderr 摘要| Kiro
+```
+
+信任边界说明：页面内容、控制台消息与测试输出进入模型上下文，按不可信输入处理（`THREAT_MODEL.md`）；hook 与测试以开发者权限运行，它们的文件可能被 agent 改写（`THREAT_MODEL.md`「篡改 / 绕过验证」）。核对工具的输入含个人数据，只在本机处理。
 
 FR-2 的自动化测试闭环（在 Kiro IDE 或 CLI 本地会话中）：
 
@@ -87,7 +118,7 @@ sequenceDiagram
 
 ## 4. 事实核对
 
-核对日期：**2026-10-20**。核对方式：用 curl 下载 kiro.dev 文档页面的 Markdown 版本（文档页提供 `.md` 视图）、changelog 与博客页面全文检索，AWS 文档页面直接读取。本次修订新增或改动的条目（F-06、F-07、F-08、F-09、F-31、F-41、F-44、F-45、F-46）另用网页读取工具逐页打开官方页面核对原文。凡是下表没有的产品说法，仓库内都不应出现。核对不了的内容见 `docs/unverified-removed.md`。
+核对日期：**2026-10-20**。核对方式：用 curl 下载 kiro.dev 文档页面的 Markdown 版本（文档页提供 `.md` 视图）、changelog 与博客页面全文检索，AWS 文档页面直接读取。本次修订新增或改动的条目（F-06、F-07、F-08、F-09、F-31、F-41、F-44、F-45、F-46）另用网页读取工具逐页打开官方页面核对原文；F-47 至 F-49 于 2026-10-21 规范对齐时用同样方式核对。凡是下表没有的产品说法，仓库内都不应出现。核对不了的内容见 `docs/unverified-removed.md`。
 
 | 编号 | 说法（仓库内使用的版本） | 官方链接 | 核实日期 |
 |---|---|---|---|
@@ -137,6 +168,9 @@ sequenceDiagram
 | F-44 | 用 Google、GitHub 或 AWS Builder ID 登录时，Kiro 通过 Stripe 处理订阅计费（使用 IAM Identity Center 的企业用户不需要放行 Stripe 域名）；企业订阅按每个已订阅用户按月计费，账单在 AWS Billing and Cost Management 的 Charges by service 中 Kiro 项下。 | https://kiro.dev/docs/privacy-and-security/firewalls/ ；https://kiro.dev/docs/enterprise/billing/ | 2026-10-20 |
 | F-45 | AWS Prescriptive Guidance 有一个 pattern：用本地 MCP 服务器把 IaC 与源代码安全扫描接入 Kiro 等编码助手，给出 `.kiro/settings/mcp.json` 配置示例，代码在 aws-samples/sample-mcp-security-scanner。 | https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-real-time-coding-security-validation-by-using-an-mcp-server-with-kiro-and-other-coding-assistants.html | 2026-10-20 |
 | F-46 | AWS Prescriptive Guidance 的 agentic AI 治理与架构指南把 Kiro 列为终端用户层的代码助手方案；生成式 AI 安全参考架构（能力 6）对 Kiro 给出 IAM Identity Center、PrivateLink 终端节点、用户活动遥测、客户托管 KMS 密钥等安全建议。 | https://docs.aws.amazon.com/prescriptive-guidance/latest/govern-architect-agentic-ai/gen-ai-end-user-solutions-layer.html ；https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture-generative-ai/ai-apps.html | 2026-10-20 |
+| F-47 | Amazon S3 的费用组成包括存储、请求与数据检索、数据传输等（用户活动报告写入 S3 时适用）；以官方定价页为准。 | https://aws.amazon.com/s3/pricing/ | 2026-10-21 |
+| F-48 | 可以用 AWS Budgets 创建预算来跟踪成本和用量，并为预算通知添加邮件接收人。 | https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-create.html | 2026-10-21 |
+| F-49 | AWS 责任共担模型：安全与合规由 AWS 与客户共同承担。 | https://aws.amazon.com/compliance/shared-responsibility-model/ | 2026-10-21 |
 
 ### 需求输入中待核实断言的处理结果
 
