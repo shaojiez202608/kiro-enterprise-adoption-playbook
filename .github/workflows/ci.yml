@@ -59,8 +59,9 @@ jobs:
     timeout-minutes: 10
     env:
       GITLEAKS_VERSION: 8.30.1
-      # From gitleaks_8.30.1_checksums.txt of the official release.
-      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      # From gitleaks_8.30.1_checksums.txt of the official release. A public SHA-256 checksum, not a secret;
+      # the pragma below exempts this one line from detect-secrets' high-entropy check.
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb # pragma: allowlist secret
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
