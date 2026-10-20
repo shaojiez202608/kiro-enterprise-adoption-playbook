@@ -1,0 +1,19 @@
+{
+  "name": "kiro-enterprise-adoption-playbook",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Prototype: configuration and troubleshooting reference for engineering teams adopting Kiro.",
+  "license": "MIT-0",
+  "type": "module",
+  "scripts": {
+    "test:unit": "node --test \"tests/**/*.test.mjs\"",
+    "test:e2e": "npm --prefix examples/frontend-demo run test:e2e",
+    "test": "npm run test:unit && npm run test:e2e",
+    "setup:e2e": "npm ci --prefix examples/frontend-demo && npm --prefix examples/frontend-demo run browsers:install",
+    "reconcile:sample": "node tools/reconcile-subscriptions.mjs --subscriptions sample-data/subscriptions-export.sample.csv --activity sample-data/user-activity-ide.sample.csv sample-data/user-activity-cli.sample.csv --month 2026-01",
+    "check:links": "node tools/check-links.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.playwright-mcp/
+*.log
+.DS_Store
+.env
+.env.*
+# Reconciliation output may contain user e-mail addresses; never commit it.
+reconcile-output*
+*.zip
