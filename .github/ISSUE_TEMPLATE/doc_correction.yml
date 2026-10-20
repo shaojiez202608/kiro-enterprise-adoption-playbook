@@ -1,0 +1,23 @@
+name: Fact correction
+description: A product statement in the docs no longer matches the official page.
+labels: [docs]
+body:
+  - type: input
+    id: fact
+    attributes:
+      label: Fact ID
+      placeholder: F-07
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Official page that shows the current behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What the page says now (quote) and what the repository says
+    validations:
+      required: true

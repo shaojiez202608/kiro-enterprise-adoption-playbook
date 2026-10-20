@@ -1,0 +1,41 @@
+name: Bug report
+description: Something in this repository (docs, examples, scripts, tests) is wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, account IDs, personal data, or customer information.
+        Security issues: use the AWS vulnerability reporting page instead (see the links on the previous screen).
+  - type: input
+    id: version
+    attributes:
+      label: Repository version or commit
+      placeholder: v0.1.0 or a commit hash
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [docs, examples/.kiro, Stop hook script, frontend demo, reconciliation tool, tests or CI]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Commands you ran and their output (remove host names and 12-digit numbers).
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: OS, Node.js version, Kiro client and version if relevant

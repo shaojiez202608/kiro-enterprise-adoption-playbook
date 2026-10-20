@@ -1,0 +1,7 @@
+# gitleaks configuration: default rules, no allowlist.
+# No exemption is needed: the full history scans clean with the default rules (VERIFICATION.md).
+# If an exemption is ever required, scope it to one path and one rule and give the reason here.
+title = "kiro-enterprise-adoption-playbook"
+
+[extend]
+useDefault = true

@@ -1,0 +1,27 @@
+# Weekly, grouped updates with a cooldown. Dependabot PRs are never merged automatically.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /examples/frontend-demo
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      playwright:
+        patterns: ["@playwright/*", "playwright", "playwright-core"]
+    # @playwright/test is pinned to an exact version on purpose (reproducible browser tests,
+    # docs/deployment-guide.md); review the Chromium revision change in every update.
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    # Actions are pinned by commit SHA with the version in a comment; keep both in sync.
+    open-pull-requests-limit: 3

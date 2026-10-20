@@ -1,0 +1,10 @@
+# Sensitive files need review by a maintainer: CI, scanning configuration, AI assistant configuration,
+# and the Kiro configuration and hook script that run commands on developer machines.
+# Replace the placeholder with the maintainer's GitHub handle before publishing (OPEN-QUESTIONS.md Q-13).
+/.github/                     @<MAINTAINER_GITHUB_HANDLE>
+/.gitleaks.toml               @<MAINTAINER_GITHUB_HANDLE>
+/tools/scan-secrets.sh        @<MAINTAINER_GITHUB_HANDLE>
+/AGENTS.md                    @<MAINTAINER_GITHUB_HANDLE>
+/CLAUDE.md                    @<MAINTAINER_GITHUB_HANDLE>
+/examples/.kiro/              @<MAINTAINER_GITHUB_HANDLE>
+/examples/scripts/            @<MAINTAINER_GITHUB_HANDLE>

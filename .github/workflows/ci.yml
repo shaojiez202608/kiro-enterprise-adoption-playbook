@@ -1,0 +1,77 @@
+# Checks only: nothing in this workflow deploys or writes to the repository.
+# There is no AWS deployment in this project, so there is no synth/cdk-nag job and no deploy workflow.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: lint, unit and browser tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: examples/frontend-demo/package-lock.json
+      - name: Lint
+        run: node tools/lint.mjs
+      - name: Install demo dependencies from the lock file
+        run: npm ci --prefix examples/frontend-demo
+      - name: Install Chromium for Playwright
+        run: npx --prefix examples/frontend-demo playwright install --with-deps chromium
+      - name: Unit tests (includes the hook integration test)
+        run: npm run test:unit
+      - name: Browser tests
+        run: npm run test:e2e
+
+  links:
+    name: official links reachable
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24
+      - name: Check links
+        run: npm run check:links
+
+  secrets:
+    name: gitleaks full history and canary
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GITLEAKS_VERSION: 8.30.1
+      # From gitleaks_8.30.1_checksums.txt of the official release.
+      GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install gitleaks (checksum verified)
+        run: |
+          curl -sSfL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum -c -
+          mkdir -p "${RUNNER_TEMP}/bin"
+          tar -xzf gitleaks.tar.gz -C "${RUNNER_TEMP}/bin" gitleaks
+          rm gitleaks.tar.gz
+      - name: Scan history and verify the canary is detected
+        run: GITLEAKS="${RUNNER_TEMP}/bin/gitleaks" bash tools/scan-secrets.sh

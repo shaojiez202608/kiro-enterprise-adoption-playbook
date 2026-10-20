@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security issue (do not open a public issue)
+    url: https://aws.amazon.com/security/vulnerability-reporting/
+    about: Report potential security issues privately through the AWS vulnerability reporting page or aws-security@amazon.com.
+  - name: Kiro product bugs and feature requests
+    url: https://github.com/kirodotdev/Kiro
+    about: Problems with Kiro itself belong in the official Kiro issue tracker, not here.
