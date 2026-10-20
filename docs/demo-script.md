@@ -26,4 +26,5 @@
 ## 部分 C：月度核对
 
 1. `npm run reconcile:sample`
-2. 讲解五类结果，以及 Pending 不计费、月底取消等规则（`runbook-activation-day.md` 第 4 节）。
+2. 讲解输出开头的匹配统计和八类结果，以及 Pending 不计费、月底取消等规则（`runbook-activation-day.md` 第 4 节）。
+3. 演示输入检查：把订阅导出的表头 `User name` 改成别的名字再运行，工具报错并列出实际列名（退出码 2）。
