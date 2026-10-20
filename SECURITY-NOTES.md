@@ -28,7 +28,7 @@
 | 配置 | 豁免 | 理由 |
 |---|---|---|
 | `.gitleaks.toml` | 无（只扩展默认规则） | 全部历史按默认规则扫描无发现 |
-| `.github/workflows/ci.yml` 中 `GITLEAKS_SHA256` 一行 | detect-secrets 行内 `pragma: allowlist secret` | 该值是 gitleaks 官方发布的公开 SHA-256 校验和，被高熵规则误报 |
+| `.github/workflows/ci.yml` 中 `GITLEAKS_SHA256`、`ASH_REF` 两行 | detect-secrets 行内 `pragma: allowlist secret` | 分别是 gitleaks 官方发布的公开 SHA-256 校验和与 ASH 发布标签对应的公开 git 提交哈希，被高熵规则误报 |
 | `tests/content-policy.test.mjs` 的 12 位数字检查 | 只放行 `111122223333` | 规范指定的账号 ID 占位值（D-24） |
 | 同一测试的金额检查 | 不检查 `*.sh` 与 `Makefile` | shell 脚本的位置参数（`$` 后跟数字）不是金额 |
 

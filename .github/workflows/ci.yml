@@ -86,7 +86,7 @@ jobs:
     env:
       UV_VERSION: 0.10.10
       # automated-security-helper v3.7.1 (lightweight tag; commit from git ls-remote)
-      ASH_REF: af1206aff596f1288ad066828058b3011de2a998
+      ASH_REF: af1206aff596f1288ad066828058b3011de2a998 # pragma: allowlist secret (public git commit hash)
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
