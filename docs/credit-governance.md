@@ -15,7 +15,7 @@
 | 做法 | 官方依据 | 说明 |
 |---|---|---|
 | 简单任务用 Auto 或倍率较低的模型，复杂任务再换模型 | F-26 | 模型选择器在聊天输入栏；CLI 用 `/model` |
-| 降低 reasoning effort | F-27 | 官方：较低档位消耗更少 credit；只在模型支持时出现 |
+| 降低 reasoning effort | F-27 | 官方：较低的 effort 消耗更少 credit；只在模型支持时出现 |
 | hooks 用 command 动作，少用 agent 动作 | F-08 | 官方：agent 动作触发新循环并消耗 credit，command 不消耗 |
 | steering 用 `fileMatch` / `manual` / `auto` 按需载入 | F-06 | 官方表述为保持上下文相关、减少噪声；未给出节省数据 |
 | `.kiroignore` 排除大文件、构建产物 | F-40 | 官方表述为保持上下文相关 |
