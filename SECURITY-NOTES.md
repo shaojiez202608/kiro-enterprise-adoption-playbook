@@ -9,7 +9,7 @@
 | AWS | 无 | 不创建、不读取任何 AWS 资源；不需要凭证 |
 | 示例前端服务器 `server.mjs` | 只监听 `127.0.0.1`，只允许 GET/HEAD | 路径穿越检查；`Content-Security-Policy: default-src 'self'`、`X-Content-Type-Options: nosniff` |
 | Playwright MCP（`examples/.kiro/settings/mcp.json`） | 由 agent 控制本机无头浏览器 | 固定版本；`--isolated` 不保存浏览器配置；`--allowed-origins` 限定本地地址（上游说明它不是安全边界，F-03）；`autoApprove` 为空，工具调用需人工批准 |
-| Stop hook 脚本 | 在项目根目录运行 `git status` 与 `npm run test:e2e` | 只在系统临时目录写重试计数文件；会话 ID 先做字符过滤 |
+| Stop hook 脚本 | 在项目根目录运行 `git status` 与 `npm run test:e2e`，读取改动文件内容计算指纹 | 只在系统临时目录写重试计数文件；会话 ID 先做字符过滤，无会话 ID 时用工作区路径的哈希；计数文件损坏时忽略并重写；复用端口上已有的 dev server（见 `docs/deployment-guide.md` 的 `PW_REUSE_EXISTING_SERVER`） |
 | 核对工具 | 只读本地 CSV，输出到 stdout | 输出含用户邮箱，`.gitignore` 排除 `reconcile-output*`；不要提交真实导出 |
 
 ## cdk-nag

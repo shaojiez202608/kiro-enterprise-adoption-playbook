@@ -19,7 +19,11 @@ export default defineConfig({
   webServer: {
     command: 'node server.mjs',
     url: `http://127.0.0.1:${PORT}/`,
-    reuseExistingServer: !process.env.CI,
+    // Reuse a server already listening on PORT (for example the dev server the steering file keeps
+    // running in the background). The Stop hook sets PW_REUSE_EXISTING_SERVER=1; plain CI runs start
+    // their own server. Playwright only checks that the URL answers, so make sure the process on
+    // PORT really is this demo.
+    reuseExistingServer: process.env.PW_REUSE_EXISTING_SERVER === '1' || !process.env.CI,
     env: { PORT },
     timeout: 30_000,
   },

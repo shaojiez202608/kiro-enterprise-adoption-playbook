@@ -8,7 +8,7 @@
 # 停止示例前端（如果在前台运行，Ctrl+C 即可）
 # 删除依赖与测试产物
 rm -rf examples/frontend-demo/node_modules examples/frontend-demo/test-results examples/frontend-demo/playwright-report
-# Stop hook 的重试计数文件
+# Stop hook 的重试计数文件（删除即重置计数）
 rm -rf "${TMPDIR:-/tmp}/kiro-ui-verify"
 # 可选：删除 Playwright 下载的浏览器（会影响本机其他使用 Playwright 的项目）
 (cd examples/frontend-demo && npx playwright uninstall)

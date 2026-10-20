@@ -27,7 +27,8 @@ npm run setup:e2e && npm test
 | 参数 | 位置 | 默认 | 说明 |
 |---|---|---|---|
 | `PORT` | 环境变量 | `4173` | 示例前端端口。修改后需同步改 `examples/.kiro/settings/mcp.json` 的 `--allowed-origins` 与 steering 中的地址 |
-| `KIRO_UI_VERIFY_MAX_ATTEMPTS` | 环境变量 | `2` | Stop hook 每个会话自动回传失败的最大次数 |
+| `KIRO_UI_VERIFY_MAX_ATTEMPTS` | 环境变量 | `2` | Stop hook 每个会话（事件没有 `session_id` 时按工作区）自动回传失败、请求新回合的最大次数；超过后以退出码 3 结束并提示询问用户，测试通过后计数清零（D-08） |
+| `PW_REUSE_EXISTING_SERVER` | 环境变量（hook 脚本自动设置为 `1`） | 未设置 | 为 `1` 时 Playwright 复用已在 `PORT` 上运行的 dev server，即使设置了 `CI`。Playwright 只检查该地址能否响应，请确认占用端口的就是示例前端 |
 | `@playwright/mcp` 版本 | `examples/.kiro/settings/mcp.json` | `0.0.83` | 升级时显式修改（D-04） |
 | `--month`、`--sub-key`、`--sub-status`、`--act-key` | `tools/reconcile-subscriptions.mjs` 参数 | 见脚本头注释 | 月度核对 |
 

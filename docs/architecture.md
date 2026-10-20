@@ -52,12 +52,14 @@ sequenceDiagram
     Agent->>Steer: 修改 frontend-demo/public/** 时按 fileMatch 载入
     Agent->>MCP: 打开页面、点击、读控制台、截图
     Agent-->>Dev: 回合结束
-    Hook->>Suite: 前端文件有改动时运行浏览器测试
+    Hook->>Suite: 前端未提交改动自上次检查后有变化时运行浏览器测试（复用已运行的 dev server）
     alt 测试失败且未超过重试上限
-        Hook-->>Agent: stderr 失败摘要 + 退出码 1
-        Agent->>Agent: 继续修复
-    else 通过或已达上限
-        Hook-->>Dev: 结束（退出码 0）
+        Hook-->>Agent: 退出码 1 + stderr 失败摘要（IDE：stderr 发送给 agent；CLI：开始新回合）
+        Note over Agent: agent 是否继续修复由 agent 决定，未在 Kiro 内验证
+    else 测试失败且已超过上限
+        Hook-->>Dev: 退出码 3 + stderr 失败摘要与「请询问用户」（CLI：回合保持结束并显示警告；IDE：stderr 发送给 agent）
+    else 测试通过
+        Hook-->>Dev: 退出码 0，计数清零
     end
 ```
 
@@ -71,7 +73,7 @@ sequenceDiagram
 | 端点清单 | 只列类别和两个官方排障命令里出现的端点，完整清单链接官方页面 | 端点会变；复制整表容易过期（D-10） |
 | Playwright MCP 版本 | 固定版本号，不用 `@latest` | 官方一键安装配置用 `@latest`；固定版本便于复现和审查（D-04） |
 | hook 动作类型 | 只用 command 动作 | 官方说明 Agent Prompt 动作会消耗 credit，Shell Command 不会（F-08，D-07） |
-| 失败回传方式 | stderr + 退出码 1，带每会话重试上限 | 同时符合 IDE 与 CLI 文档描述的语义；上限防止无限追加回合（D-08） |
+| 失败回传方式 | stderr + 退出码 1，带每会话重试上限；超过上限用退出码 3 | 同时符合 IDE 与 CLI 文档描述的语义；上限防止无限追加回合；上限提示不放在会被忽略的退出码 0 stdout 中（D-08） |
 | AWS 部署 | 不适用 | 无可在沙箱端到端验证的组件（D-02） |
 | 工具链 | 只用 Node（Playwright 需要 Node） | 没有 IaC，不引入第二种语言（D-03） |
 | 数字 | 不写价格、额度、倍率、并发上限等数字 | 通用要求与负责人规则；一律指向官方页面（D-14） |
@@ -96,7 +98,7 @@ sequenceDiagram
 | F-05 | Kiro Web 每个沙箱内置无头 Chrome，并预装 Playwright MCP 服务器、agent-browser CLI、Chrome DevTools MCP 服务器，无需配置。 | https://kiro.dev/docs/web/sandbox/ ；https://kiro.dev/changelog/web/playwright-and-agent-browser-support/ | 2026-10-20 |
 | F-06 | Steering：工作区 `.kiro/steering/`，全局 `~/.kiro/steering/`，冲突时工作区优先；全局目录可由 MDM / 组策略分发作为团队 steering。front matter 必须是文件第一段内容；`inclusion` 取值 `always`（默认）、`fileMatch`（配 `fileMatchPattern`，可为数组）、`manual`（用 `#文件名` 引用，也会出现在 `/` 斜杠命令中）、`auto`（需 `name`、`description`）。支持 `#[[file:路径]]` 引用。自定义 agent 不自动包含 steering。支持 AGENTS.md。 | https://kiro.dev/docs/steering/ | 2026-10-20 |
 | F-07 | Hooks：`.kiro/hooks/*.json`，`version: "v1"`，字段 `name`、`trigger`（PascalCase）、`matcher`、`action.type`（`command`/`agent`）、`action.command`/`action.prompt`、`timeout`（秒）、`enabled`。触发器包括 `SessionStart`、`Stop`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`PostFileCreate`、`PostFileSave`、`PostFileDelete`、`PreTaskExec`、`PostTaskExec`。command 动作在项目根目录运行，事件 JSON 从 STDIN 传入。`Stop` hook 不使用 matcher。文件类触发器只响应 agent 的改动。Kiro Web 会话不运行 hooks。 | https://kiro.dev/docs/hooks/ ；https://kiro.dev/docs/hooks/types/ ；https://kiro.dev/docs/ide/whats-new-v1/hooks/ | 2026-10-20 |
-| F-08 | Hook 动作：Agent Prompt 动作会触发新的 agent 循环并消耗 credit；Shell Command 动作不消耗 credit。IDE 中命令非零退出时 stderr 发送给 agent；CLI 的 `Stop` hook 退出码 1 会开始新的 agent 回合，退出码 0 且无继续决定时回合结束。 | https://kiro.dev/docs/hooks/actions/ ；https://kiro.dev/docs/hooks/types/ | 2026-10-20 |
+| F-08 | Hook 动作：Agent Prompt 动作会触发新的 agent 循环并消耗 credit；Shell Command 动作不消耗 credit。IDE 中命令退出码 0 时 stdout 加入 agent 上下文，非零退出时 stderr 发送给 agent 并告知 hook 返回错误；CLI 的 `Stop` hook 退出码 1 会开始新的 agent 回合，退出码 0 且无继续决定时回合结束，其他退出码让回合保持结束且 hook 输出不转给 agent；CLI 中退出码 0 的 stdout 只对 SessionStart、UserPromptSubmit 加入上下文，其他触发器忽略，其他退出码显示警告后继续。 | https://kiro.dev/docs/hooks/actions/ ；https://kiro.dev/docs/hooks/types/ | 2026-10-20 |
 | F-09 | Dev servers：agent 可在专用终端后台运行长时间进程（如开发服务器）并读取其输出；可用 steering 规定改动后检查输出；可配合 `#Problems`。 | https://kiro.dev/docs/ide/chat/dev-servers/ | 2026-10-20 |
 | F-10 | IDE 聊天输入框用 `#` 调用上下文提供者：`#codebase`、`#file`、`#folder`、`#git diff`、`#terminal`、`#problems`、`#url`、`#code`、`#repository`、`#current`、`#steering`、`#docs`、`#spec`、`#mcp`，可组合使用。 | https://kiro.dev/docs/ide/chat/ | 2026-10-20 |
 | F-11 | IDE 0.11 起可通过粘贴或拖拽把文档附加到聊天输入框，格式包括 PDF、CSV、DOC、DOCX、XLS、XLSX、HTML、TXT、Markdown；每条消息有附件数量上限（以官方页面为准）；可与文字、图片混合在同一条提示中。 | https://kiro.dev/changelog/ide/0-11/ | 2026-10-20 |

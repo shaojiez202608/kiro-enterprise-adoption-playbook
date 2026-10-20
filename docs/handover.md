@@ -9,7 +9,7 @@
 | 问题—处置矩阵与专题文档（FR-1、3–8） | `docs/` | 已按官方文档核对（2026-10-20） |
 | Kiro 配置示例（MCP、steering、hooks） | `examples/.kiro/` | 格式经单元测试校验；未在 Kiro 内运行 |
 | 示例前端与浏览器测试（FR-2） | `examples/frontend-demo/` | 本机实际运行，结果见 `VERIFICATION.md` |
-| Stop hook 脚本 | `examples/scripts/kiro-ui-verify.mjs` | 单元测试（假 runner）；未在 Kiro 内运行 |
+| Stop hook 脚本 | `examples/scripts/kiro-ui-verify.mjs` | 单元测试（假 runner）、集成测试（dev server 已占用端口时运行真实 Playwright）与本机命令行演练；未在 Kiro 内运行 |
 | 月度核对工具 | `tools/reconcile-subscriptions.mjs` | 单元测试 + 合成数据 |
 | 事实核对表 | `docs/architecture.md` 第 4 节 | 每条含链接与日期 |
 

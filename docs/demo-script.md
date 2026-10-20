@@ -18,8 +18,8 @@
 2. 打开 Steering 面板，说明 `frontend-verification.md` 是 `fileMatch`，`debug-report.md` 是 `manual`（F-06）。
 3. 在聊天中输入：「在状态筛选里增加一个 'retired' 选项，并在示例数据里加一台 retired 设备」。
 4. 观察：agent 修改 `frontend-demo/public/` 文件时载入前端验证 steering；按 steering 启动 dev server（F-09）、调用 Playwright MCP 打开页面、读控制台、截图（F-03）。默认需要人工批准 MCP 工具调用（D-05）。
-5. 回合结束后 Stop hook 运行 `npm --prefix frontend-demo run test:e2e`。由于现有测试断言设备总数，新增设备会让测试失败，hook 把失败摘要回传给 agent（F-08），agent 继续修复测试或询问。
-6. 演示重试上限：两次失败后 hook 停止回传并提示询问用户（D-08）。
+5. 回合结束后 Stop hook 运行 `npm --prefix frontend-demo run test:e2e`。由于现有测试断言设备总数，新增设备会让测试失败，hook 以退出码 1 结束并把失败摘要写到 stderr：按官方文档，IDE 会把 stderr 发送给 agent，CLI 会开始新的 agent 回合（F-08）。agent 之后是修复还是询问，由 agent 决定，未在 Kiro 内验证。
+6. 演示重试上限：默认自动回传两次后，第三次失败时 hook 以退出码 3 结束，把失败摘要和「请询问用户」写到 stderr，不再请求新回合（D-08）。
 7. 用 `#debug-report #terminal` 演示 manual steering 与上下文引用（F-06、F-10）。
 8. 把一份 PDF 拖进聊天输入框，演示文档附件（F-11）。
 
