@@ -53,9 +53,9 @@
 
 | # | 检查项 | 状态 | 证据 | 处理 |
 |---|---|---|---|---|
-| D-1a | 静态检查零未处理发现，每条抑制有理由 | 需修改 → 已修改 | `SECURITY-NOTES.md`「扫描配置与豁免」；`VERIFICATION.md` 第 4 节 | 跑了 zizmor、semgrep、npm audit、gitleaks、detect-secrets；没有抑制项。内容规则测试中的两处放行写明理由 |
+| D-1a | 静态检查零未处理发现，每条抑制有理由 | 需修改 → 已修改 | `SECURITY-NOTES.md`「扫描配置与豁免」；`VERIFICATION.md` 第 4 节 | 跑了 zizmor、semgrep、npm audit、gitleaks、detect-secrets。抑制项 3 条，都在行内并写明理由：semgrep 1 条（`tools/preflight.mjs`），detect-secrets 2 条（CI 中的公开校验和与提交哈希）；内容规则测试中的两处放行也写明理由（`SECURITY-NOTES.md`）。ASH 与 osv-scanner 本机未运行（无 Docker / 未安装），按规范视为未通过，ASH 交给 CI 的 `ash` job |
 | D-1b | cdk-nag、信任策略带 SourceAccount 与 SourceArn、敏感资源有资源策略 | 不适用 | `SECURITY-NOTES.md`「cdk-nag 与 AWS 安全基线」 | 不创建 IAM 角色或资源（D-28） |
-| D-2a | CI 含 lint、测试、密钥扫描；Actions 按 SHA 固定、权限最小 | 需修改 → 已修改 | `.github/workflows/ci.yml:10-11,23,26` | 新增：lint、单元与集成测试、Playwright、链接检查、gitleaks 全历史 + canary。SHA 用 `git ls-remote` 查出（checkout v6.1.0、setup-node v6.5.0），`persist-credentials: false`；测试检查 SHA 固定与 `contents: read`。zizmor 无发现。**未在 GitHub 上运行，仅本地等效执行** |
+| D-2a | CI 含 lint、测试、密钥扫描；Actions 按 SHA 固定、权限最小 | 需修改 → 已修改 | `.github/workflows/ci.yml:10-11,23,26` | 新增：lint、单元与集成测试、Playwright、链接检查、gitleaks 全历史 + canary、ASH（container 模式，扫描器未完成即失败）。SHA 用 `git ls-remote` 查出（checkout v6.1.0、setup-node v6.5.0），`persist-credentials: false`；测试检查 SHA 固定与 `contents: read`。zizmor 无发现。**未在 GitHub 上运行，仅本地等效执行** |
 | D-2b | synth 与部署验证 workflow | 不适用 | — | 没有 IaC 与部署（D-29） |
 | D-2c | Dependabot 分组、cooldown | 需修改 → 已修改 | `.github/dependabot.yml:1-8` | npm（`examples/frontend-demo`）与 GitHub Actions，按周、分组、冷却期，注释写明固定版本的原因 |
 | D-2d | gitleaks 豁免有理由 | 需修改 → 已修改 | `.gitleaks.toml` | 新增，无豁免，写明原因 |
