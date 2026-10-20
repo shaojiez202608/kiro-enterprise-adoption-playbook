@@ -1,7 +1,7 @@
-import { test } from 'node:test';
+import { after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync as mkdtempRaw, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -16,6 +16,11 @@ const failingReport = {
     { title: 'filter', tests: [{ status: 'unexpected' }] },
   ] }],
 };
+// Every temporary directory created by these tests is removed at the end.
+const created = [];
+const mkdtempSync = (prefix) => { const d = mkdtempRaw(prefix); created.push(d); return d; };
+after(() => { for (const d of created) rmSync(d, { recursive: true, force: true }); });
+
 const fail = () => ({ ok: false, report: failingReport });
 const pass = () => ({ ok: true, report: {} });
 

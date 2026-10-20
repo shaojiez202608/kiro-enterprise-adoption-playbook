@@ -10,3 +10,10 @@ blob-report/
 # Reconciliation output may contain user e-mail addresses; never commit it.
 reconcile-output*
 *.zip
+
+# Local caches (never committed)
+.pytest_cache/
+__pycache__/
+.ruff_cache/
+cdk.out/
+cdk.context.json

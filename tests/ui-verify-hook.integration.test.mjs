@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -34,6 +34,7 @@ function startDevServer(port) {
 test('hook passes while a dev server already occupies the test port (CI set in the environment)', { skip: !installed && 'run npm run setup:e2e first', timeout: 240_000 }, async () => {
   const port = await freePort();
   const server = await startDevServer(port);
+  const stateDir = mkdtempSync(join(tmpdir(), 'kiro-hook-it-'));
   try {
     // Control: the previous behaviour (CI forced, no reuse) fails on the occupied port.
     const control = spawnSync('npm', ['--prefix', 'frontend-demo', 'run', 'test:e2e'], {
@@ -47,12 +48,13 @@ test('hook passes while a dev server already occupies the test port (CI set in t
       stdin: JSON.stringify({ session_id: `it${process.pid}`, cwd: EXAMPLES }),
       cwd: EXAMPLES,
       env: { ...process.env, PORT: port, CI: '1' },
-      stateDir: mkdtempSync(join(tmpdir(), 'kiro-hook-it-')),
+      stateDir,
       fingerprint: () => 'integration',
     });
     assert.deepEqual(result, { exitCode: 0, stdout: '', stderr: '' }, result.stderr);
     assert.equal(server.exitCode, null, 'the existing dev server is reused, not replaced');
   } finally {
     server.kill();
+    rmSync(stateDir, { recursive: true, force: true });
   }
 });
