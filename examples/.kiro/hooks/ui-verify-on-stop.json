@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "ui-verify-on-stop",
+      "description": "After the agent finishes a turn, run the frontend browser suite if frontend files changed. On failure, report the failure back to the agent (bounded retries).",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro-ui-verify.mjs"
+      },
+      "timeout": 300,
+      "enabled": true
+    }
+  ]
+}
