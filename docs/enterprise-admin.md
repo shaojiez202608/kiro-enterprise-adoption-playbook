@@ -50,7 +50,7 @@
 - **Identity Center 清理**：旧 profile 使用 Identity Center 且选择月底停用时，需在控制台按提示清理应用分配（F-32）。
 - **自动取消**：用户从 Identity Center 或已订阅组中移除时订阅会在月底自动取消；仅停用用户不会取消订阅（F-32）。迁移脚本或流程中不要只做「停用用户」。
 - **更换身份源**：变更 Identity Center 身份源可能重建用户 ID，旧订阅会显示为 ID 并在下月初自动取消（F-32）。
-- **个人订阅转企业**：社交登录或 Builder ID 的个人订阅与企业订阅是两套计费（F-25 所在 FAQ、F-33）。可用登录方式限制引导用户使用组织登录（F-35）。个人订阅如何取消见 https://kiro.dev/docs/billing/cancelling/ 。
+- **个人订阅转企业**：用 Google、GitHub 或 AWS Builder ID 登录时，订阅通过 Stripe 计费；企业订阅按每个已订阅用户按月计费，账单在 AWS Billing and Cost Management 的 Kiro 项下（F-44）。可用登录方式限制引导用户使用组织登录（F-35）。个人订阅如何取消见 https://kiro.dev/docs/billing/cancelling/ 。
 - **用户本地配置**：用户的 `~/.kiro/`（steering、MCP 配置等）在本机，与订阅无关；团队统一配置建议放在仓库 `.kiro/` 或通过 MDM 分发全局 steering（F-06、F-41）。
 
 ## 5. 管理员权限

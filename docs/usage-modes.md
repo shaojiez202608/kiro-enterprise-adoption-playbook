@@ -12,7 +12,7 @@
 | 浏览器验证 | 需自行配置 MCP（如 Playwright MCP，F-02），本仓库 `examples/` | 沙箱内置无头 Chrome 与 Playwright MCP 等工具，无需配置（F-05） | Browser 功能（F-18） |
 | 代码来源 | 本地工作区 | 服务端通过已连接的 GitHub/GitLab 克隆，本地工作副本不上传（F-13） | 本机或远程主机上的目录与 git 仓库（F-18） |
 | 配置 | 工作区 `.kiro/` 与 `~/.kiro/` | 仓库中的 `.kiro/` 随克隆生效；`~/.kiro/` 不生效，个人配置用 Configuration Sync（F-41） | Crew 自身配置与 MCP（见官方 Crew 文档） |
-| Hooks | 支持（F-07） | Web 会话不运行 hooks（F-07） | Crew 有自己的 hooks 能力（https://kiro.dev/docs/crew/capabilities/hooks/ ） |
+| Hooks | 支持（F-07） | 官方两页说法不一致：hooks 页写 Kiro Web 会话不运行 hook 触发器和动作（F-07）；云端会话页写仓库 `.kiro/` 中提交的 hooks 在云端会话中自动生效（F-41）。本仓库不依赖云端会话中的 hook；以会话中实际看到的配置为准（CLI 云端会话中 `/hooks` 显示的是沙箱配置，F-41） | Crew 有自己的 hooks 能力（https://kiro.dev/docs/crew/capabilities/hooks/ ） |
 | 前提条件 | 安装客户端并登录 | 付费订阅；IAM Identity Center 组织需管理员启用 Cloud Sessions；仅 `us-east-1`（F-13、F-43） | 安装 Crew 并登录 kiro-cli；订阅可用于 Crew（F-18、F-19） |
 | 主要限制 | 依赖本机在线、不休眠 | 并发数有上限；IDE 中部分上下文选择器不可用（F-13） | 需自行运维主机；企业治理能力官方未说明（Q-01） |
 
@@ -31,7 +31,8 @@
 
 ## 云端会话的安全要点
 
-- 网络访问选最小档位：仅仓库访问 → 常用依赖 → 开放互联网（F-42）。
+- 网络访问选最小的级别：仅仓库访问 → 常用依赖 → 开放互联网（F-42）。
 - 只给任务需要的 secrets（F-42）。
 - 仓库中的 `.kiro/` 会进入云端会话（F-41），提交前检查其中不含凭证（steering 文档也要求不写密钥，F-06）。
+- 这也包括 `.kiro/settings/mcp.json`：云端会话页写明仓库中提交的 MCP 服务器在云端会话中自动生效（F-41）。把本仓库 `examples/` 的配置提交到团队仓库后，Playwright MCP 也会出现在云沙箱中；`mcp.json` 的 `env` 中不要写凭证（Configuration Sync 页同样提醒上传的 `mcp.json` 会带上 `env` 的字面值，F-41）。云沙箱本身已预装 Playwright MCP（F-05），是否还需要仓库中的这一份，由团队决定。
 - Kiro Web 不会自动合并，结果以 PR/MR 形式回到你的代码托管（F-14）。

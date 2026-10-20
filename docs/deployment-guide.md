@@ -8,7 +8,7 @@
 |---|---|
 | Node.js | 20 或以上（本项目在 Node 24 上验证） |
 | 网络 | 首次安装需访问 npm 与 Playwright 浏览器下载地址 |
-| Kiro（仅在 Kiro 内使用示例时） | Kiro IDE 1.0 / Kiro CLI V3 及以上（新 hooks 格式，F-07）；组织未关闭 MCP（F-36） |
+| Kiro（仅在 Kiro 内使用示例时） | Kiro IDE 1.0 / Kiro CLI V3 及以上（新 hooks 格式，F-07）；组织未关闭 MCP（F-36）。Kiro CLI V1/V2 只自动载入 `inclusion: always` 的 steering，`fileMatch` 与 `manual` 不会自动载入（F-06），因此示例的前端验证 steering 在 V1/V2 中不会自动生效，需要升级到 V3 或手动引用 |
 | AWS | 不需要 |
 
 ## 一条命令准备并运行全部测试

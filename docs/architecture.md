@@ -69,25 +69,25 @@ sequenceDiagram
 
 | 取舍 | 选择 | 理由 |
 |---|---|---|
-| 组织方式 | 按「试用中遇到的问题」组织，官方已有的内容只链接 | spec 第 7 节差异化要求；避免重写官方文档 |
+| 组织方式 | 按「试用中遇到的问题」组织，官方已有的内容只链接 | 需求输入的差异化方向；避免重写官方文档 |
 | 端点清单 | 只列类别和两个官方排障命令里出现的端点，完整清单链接官方页面 | 端点会变；复制整表容易过期（D-10） |
 | Playwright MCP 版本 | 固定版本号，不用 `@latest` | 官方一键安装配置用 `@latest`；固定版本便于复现和审查（D-04） |
 | hook 动作类型 | 只用 command 动作 | 官方说明 Agent Prompt 动作会消耗 credit，Shell Command 不会（F-08，D-07） |
 | 失败回传方式 | stderr + 退出码 1，带每会话重试上限；超过上限用退出码 3 | 同时符合 IDE 与 CLI 文档描述的语义；上限防止无限追加回合；上限提示不放在会被忽略的退出码 0 stdout 中（D-08） |
 | AWS 部署 | 不适用 | 无可在沙箱端到端验证的组件（D-02） |
 | 工具链 | 只用 Node（Playwright 需要 Node） | 没有 IaC，不引入第二种语言（D-03） |
-| 数字 | 不写价格、额度、倍率、并发上限等数字 | 通用要求与负责人规则；一律指向官方页面（D-14） |
+| 数字 | 不写价格、额度、倍率、并发上限等数字 | 项目约定；一律指向官方页面（D-14） |
 
 ## 3. 局限
 
 - Kiro IDE / CLI / Web / Crew 本身不在本机，所有 Kiro 行为来自官方文档，未实测。
 - 官方文档持续更新（本次核对日期 2026-10-20）。发布前应重新核对 F-xx 链接，可运行 `npm run check:links` 检查链接是否可访问（只检查可达性，不检查内容）。
 - 订阅导出 CSV 的列名拼写、订阅导出与活动报告之间的关联键，官方未写明，工具用可配置列名处理（见 `OPEN-QUESTIONS.md`）。
-- 客户原话与场景细节未提供，矩阵背景列用通用描述。
+- 试用反馈原文与场景细节未提供，矩阵背景列用通用描述。
 
 ## 4. 事实核对
 
-核对日期：**2026-10-20**。核对方式：用 curl 下载 kiro.dev 文档页面的 Markdown 版本（文档页提供 `.md` 视图）、changelog 与博客页面全文检索，AWS 文档页面直接读取。凡是下表没有的产品说法，仓库内都不应出现。核对不了的内容见 `docs/unverified-removed.md`。
+核对日期：**2026-10-20**。核对方式：用 curl 下载 kiro.dev 文档页面的 Markdown 版本（文档页提供 `.md` 视图）、changelog 与博客页面全文检索，AWS 文档页面直接读取。本次修订新增或改动的条目（F-06、F-07、F-08、F-09、F-31、F-41、F-44、F-45、F-46）另用网页读取工具逐页打开官方页面核对原文。凡是下表没有的产品说法，仓库内都不应出现。核对不了的内容见 `docs/unverified-removed.md`。
 
 | 编号 | 说法（仓库内使用的版本） | 官方链接 | 核实日期 |
 |---|---|---|---|
@@ -96,10 +96,10 @@ sequenceDiagram
 | F-03 | Playwright MCP 提供 `browser_navigate`、`browser_click`、`browser_take_screenshot`、`browser_console_messages`（读控制台消息）等工具；参数 `--headless`、`--isolated`、`--allowed-origins`（上游说明：不构成安全边界）。来源为该 MCP 服务器的上游官方仓库，不是 Kiro 文档。 | https://github.com/microsoft/playwright-mcp | 2026-10-20 |
 | F-04 | Kiro 官方博客（云端执行）写明：在 Kiro Web 的云沙箱中运行应用，Kiro 用 Playwright 复现问题、修改后再次在真实浏览器中走一遍流程验证。该示例是 Kiro Web / 云沙箱场景。 | https://kiro.dev/blog/agentic-engineering-in-the-cloud/ | 2026-10-20 |
 | F-05 | Kiro Web 每个沙箱内置无头 Chrome，并预装 Playwright MCP 服务器、agent-browser CLI、Chrome DevTools MCP 服务器，无需配置。 | https://kiro.dev/docs/web/sandbox/ ；https://kiro.dev/changelog/web/playwright-and-agent-browser-support/ | 2026-10-20 |
-| F-06 | Steering：工作区 `.kiro/steering/`，全局 `~/.kiro/steering/`，冲突时工作区优先；全局目录可由 MDM / 组策略分发作为团队 steering。front matter 必须是文件第一段内容；`inclusion` 取值 `always`（默认）、`fileMatch`（配 `fileMatchPattern`，可为数组）、`manual`（用 `#文件名` 引用，也会出现在 `/` 斜杠命令中）、`auto`（需 `name`、`description`）。支持 `#[[file:路径]]` 引用。自定义 agent 不自动包含 steering。支持 AGENTS.md。 | https://kiro.dev/docs/steering/ | 2026-10-20 |
-| F-07 | Hooks：`.kiro/hooks/*.json`，`version: "v1"`，字段 `name`、`trigger`（PascalCase）、`matcher`、`action.type`（`command`/`agent`）、`action.command`/`action.prompt`、`timeout`（秒）、`enabled`。触发器包括 `SessionStart`、`Stop`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`PostFileCreate`、`PostFileSave`、`PostFileDelete`、`PreTaskExec`、`PostTaskExec`。command 动作在项目根目录运行，事件 JSON 从 STDIN 传入。`Stop` hook 不使用 matcher。文件类触发器只响应 agent 的改动。Kiro Web 会话不运行 hooks。 | https://kiro.dev/docs/hooks/ ；https://kiro.dev/docs/hooks/types/ ；https://kiro.dev/docs/ide/whats-new-v1/hooks/ | 2026-10-20 |
+| F-06 | Steering：工作区 `.kiro/steering/`，全局 `~/.kiro/steering/`，冲突时工作区优先；全局目录可由 MDM / 组策略分发作为团队 steering。front matter 必须是文件第一段内容；`inclusion` 取值 `always`（默认）、`fileMatch`（配 `fileMatchPattern`，可为数组）、`manual`（用 `#文件名` 引用，也会出现在 `/` 斜杠命令中）、`auto`（需 `name`、`description`）。支持 `#[[file:路径]]` 引用。自定义 agent 不自动包含 steering。支持 AGENTS.md。Kiro CLI V3 支持全部四种 inclusion；V1/V2 只自动载入 `always`，`fileMatch` 与 `manual` 不自动载入。 | https://kiro.dev/docs/steering/ | 2026-10-20 |
+| F-07 | Hooks：`.kiro/hooks/*.json`，`version: "v1"`，字段 `name`、`trigger`（PascalCase）、`matcher`、`action.type`（`command`/`agent`）、`action.command`/`action.prompt`、`timeout`（秒）、`enabled`。触发器包括 `SessionStart`、`Stop`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`PostFileCreate`、`PostFileSave`、`PostFileDelete`、`PreTaskExec`、`PostTaskExec`。command 动作在项目根目录运行，事件 JSON 从 STDIN 传入。`Stop` hook 不使用 matcher。文件类触发器只响应 agent 的改动（手动编辑不触发）。hooks 在会话开始时自动激活。hooks 页写明：Kiro Web 会话不运行这些触发器与 command / agent 动作（与 F-41 云端会话页的说法不一致，见 Q-11）。 | https://kiro.dev/docs/hooks/ ；https://kiro.dev/docs/hooks/types/ ；https://kiro.dev/docs/ide/whats-new-v1/hooks/ | 2026-10-20 |
 | F-08 | Hook 动作：Agent Prompt 动作会触发新的 agent 循环并消耗 credit；Shell Command 动作不消耗 credit。IDE 中命令退出码 0 时 stdout 加入 agent 上下文，非零退出时 stderr 发送给 agent 并告知 hook 返回错误；CLI 的 `Stop` hook 退出码 1 会开始新的 agent 回合，退出码 0 且无继续决定时回合结束，其他退出码让回合保持结束且 hook 输出不转给 agent；CLI 中退出码 0 的 stdout 只对 SessionStart、UserPromptSubmit 加入上下文，其他触发器忽略，其他退出码显示警告后继续。 | https://kiro.dev/docs/hooks/actions/ ；https://kiro.dev/docs/hooks/types/ | 2026-10-20 |
-| F-09 | Dev servers：agent 可在专用终端后台运行长时间进程（如开发服务器）并读取其输出；可用 steering 规定改动后检查输出；可配合 `#Problems`。 | https://kiro.dev/docs/ide/chat/dev-servers/ | 2026-10-20 |
+| F-09 | Dev servers：agent 可在专用终端后台运行长时间进程（如开发服务器）并读取其输出；后台进程会一直运行，直到手动停止或关闭 Kiro；再次要求启动同一目录下的同一命令时复用已有进程而不重复启动；可用 steering 规定改动后检查输出；可配合 `#Problems`（该页写法为首字母大写）。 | https://kiro.dev/docs/ide/chat/dev-servers/ | 2026-10-20 |
 | F-10 | IDE 聊天输入框用 `#` 调用上下文提供者：`#codebase`、`#file`、`#folder`、`#git diff`、`#terminal`、`#problems`、`#url`、`#code`、`#repository`、`#current`、`#steering`、`#docs`、`#spec`、`#mcp`，可组合使用。 | https://kiro.dev/docs/ide/chat/ | 2026-10-20 |
 | F-11 | IDE 0.11 起可通过粘贴或拖拽把文档附加到聊天输入框，格式包括 PDF、CSV、DOC、DOCX、XLS、XLSX、HTML、TXT、Markdown；每条消息有附件数量上限（以官方页面为准）；可与文字、图片混合在同一条提示中。 | https://kiro.dev/changelog/ide/0-11/ | 2026-10-20 |
 | F-12 | Kiro CLI：可把图片拖进终端窗口（插入路径），`/paste` 粘贴剪贴板图片；用 `@路径` 引用文件或目录，内容在发送前内联展开、避免工具调用。 | https://kiro.dev/docs/cli/chat/images/ ；https://kiro.dev/docs/cli/chat/file-references/ | 2026-10-20 |
@@ -117,11 +117,11 @@ sequenceDiagram
 | F-24 | 可为 Kiro 创建接口 VPC 终端节点（AWS PrivateLink），官方列出可用服务名。 | https://kiro.dev/docs/privacy-and-security/vpc-endpoints/ | 2026-10-20 |
 | F-25 | Credit 是响应用户提示的工作量单位，按请求小数计量；简单提示消耗少，执行 spec 任务等复杂提示消耗多；不同模型消耗速率不同；vibe/spec 模式提示、spec 细化、任务执行、agent hook 执行都会消耗；可在 Kiro 内的订阅面板查看用量；月度额度在新计费月重置，未用完不结转。 | https://kiro.dev/faq/ ；https://kiro.dev/docs/billing/ | 2026-10-20 |
 | F-26 | 模型消耗以 Auto 为基准的倍率表示；倍率相同的模型实际消耗也可能不同，取决于生成的 token 数、思考深度、分词器等。 | https://kiro.dev/docs/models/ | 2026-10-20 |
-| F-27 | Reasoning effort：较低档位响应更快、更短、消耗更少 credit；较高档位消耗更多 token；IDE 中 effort 控件只在本地会话出现。 | https://kiro.dev/docs/models/effort/ | 2026-10-20 |
+| F-27 | Reasoning effort：较低的 effort 响应更快、更短、消耗更少 credit；较高档位消耗更多 token；IDE 中 effort 控件只在本地会话出现。 | https://kiro.dev/docs/models/effort/ | 2026-10-20 |
 | F-28 | Compaction：接近上下文上限时自动摘要较早的对话；CLI 可用 `/compact` 手动触发；IDE/CLI/Web 有上下文用量指示。 | https://kiro.dev/docs/compaction/ | 2026-10-20 |
 | F-29 | 接近月度额度时 Kiro 发送低余量通知；可在设置中关闭 `Notifications: Billing`。 | https://kiro.dev/docs/billing/proactive-usage-notifications/ | 2026-10-20 |
 | F-30 | 企业订阅：在 AWS 控制台的 Kiro 控制台创建 Kiro profile（一个 AWS 账号在一个区域只有一个 profile），在 Users & Groups 中按用户或组订阅；身份源可为 IAM Identity Center、Okta 或 Microsoft Entra ID；订阅组时组内用户逐个被订阅（没有「组订阅」概念）。 | https://kiro.dev/docs/enterprise/subscribe/ ；https://kiro.dev/docs/enterprise/concepts/ | 2026-10-20 |
-| F-31 | 部署选项有四种（独立账号、管理账号+成员账号、仅成员账号、仅管理账号）；选项 2 下每个组织在每个区域可订阅用户的账号数有上限，可联系 AWS Support 申请提升，不保证批准（具体数值以官方页面为准）。个人账号实例不能升级为组织实例。 | https://kiro.dev/docs/enterprise/deployment-options/ ；https://kiro.dev/docs/enterprise/subscribe/ | 2026-10-20 |
+| F-31 | 部署选项有四种（独立账号、管理账号+成员账号、仅成员账号、仅管理账号）；选项 2 下每个组织在每个区域可订阅用户的账号数有上限，可联系 AWS Support 申请提升，不保证批准（具体数值以官方页面为准）。IAM Identity Center 的账号实例（account instance）不能升级为组织实例，只能删除重建；在独立账号或成员账号中启用的 Identity Center 是账号实例，功能少于组织实例。 | https://kiro.dev/docs/enterprise/deployment-options/ ；https://kiro.dev/docs/enterprise/subscribe/ | 2026-10-20 |
 | F-32 | 订阅管理：可改套餐（升级立即生效，降级下月生效）；停用订阅可选月底或立即；使用 IAM Identity Center 时月底停用需在控制台按提示清理应用分配；用户从 IAM Identity Center 或已订阅组中移除等情况下订阅自动取消（月底生效）；仅停用用户不会取消订阅；状态 Active / Canceled / Pending，Pending 不计费；超额（overages）默认关闭，开启后可在 Service Quotas 查看/调整上限。 | https://kiro.dev/docs/enterprise/subscription-management/ | 2026-10-20 |
 | F-33 | 同一 profile 下重复订阅只按最高档计费一次；不同 profile（如不同区域）下重复订阅会分别计费；月中订阅按比例计费，月中退订当月全额。 | https://kiro.dev/docs/enterprise/billing/ | 2026-10-20 |
 | F-34 | 监控：Kiro 控制台仪表盘（汇总指标）；用户活动报告每日以 CSV 写入你指定的 S3 桶（按客户端类型），列包括 Date、UserId、Client_Type、Credits_Used、Total_Messages、User_Email 等，也可导出 OpenTelemetry；Users & Groups 页的 Subscriptions 表可 Download CSV，字段为 User name、Subscription status、Kiro plan、Plan source、Activation date。 | https://kiro.dev/docs/enterprise/monitor-and-track/ ；https://kiro.dev/docs/enterprise/monitor-and-track/user-activity/ ；https://kiro.dev/docs/enterprise/monitor-and-track/dashboard/ | 2026-10-20 |
@@ -131,11 +131,14 @@ sequenceDiagram
 | F-38 | 官方反馈渠道：GitHub 仓库 kirodotdev/Kiro 是公开的问题与反馈跟踪（Report a bug / Suggest an idea）；Kiro CLI 有 `/feedback` 命令。 | https://github.com/kirodotdev/Kiro ；https://kiro.dev/docs/cli/terminal-ui/ | 2026-10-20 |
 | F-39 | Kiro 控制台与 Kiro profile 支持的区域为 US East (N. Virginia)、Europe (Frankfurt) 及 GovCloud 区域；IAM Identity Center 实例需位于官方列出的区域之一。 | https://kiro.dev/docs/enterprise/supported-regions/ | 2026-10-20 |
 | F-40 | `.kiroignore` 用 gitignore 语法阻止 Kiro 读取指定文件，也可用于排除大文件、构建产物以保持上下文相关（IDE 与 CLI V3 支持，Web 尚不支持）。 | https://kiro.dev/docs/kiroignore/ | 2026-10-20 |
-| F-41 | 云端会话不读取本机 `~/.kiro/`；仓库中提交的 `.kiro/`（steering、hooks、MCP 等）随仓库克隆进入云端会话；个人配置可通过 Kiro Web 的 Settings > Sync（Configuration Sync）上传。 | https://kiro.dev/docs/cloud-sessions/ ；https://kiro.dev/docs/web/cloud-configuration/ | 2026-10-20 |
-| F-42 | 云沙箱网络访问可配置为仅仓库访问、常用依赖、开放互联网三档；开放互联网会增加提示注入与密钥外泄风险。 | https://kiro.dev/docs/guides/running-kiro-in-the-cloud/ | 2026-10-20 |
+| F-41 | 云端会话不读取本机 `~/.kiro/`；云端会话页写明：仓库 `.kiro/` 中提交的 steering、specs、自定义 agent、hooks 和 MCP 服务器随仓库克隆在云端会话中自动生效；CLI 云端会话中 `/mcp`、`/tools`、`/hooks` 显示的是沙箱的配置。个人配置可通过 Kiro Web 的 Settings > Sync（Configuration Sync）上传；上传的 `mcp.json` 会带上各服务器 `env` 中的字面值。 | https://kiro.dev/docs/cloud-sessions/ ；https://kiro.dev/docs/web/cloud-configuration/ | 2026-10-20 |
+| F-42 | 云沙箱网络访问可配置为仅仓库访问、常用依赖、开放互联网三种级别；开放互联网会增加提示注入与密钥外泄风险。 | https://kiro.dev/docs/guides/running-kiro-in-the-cloud/ | 2026-10-20 |
 | F-43 | 管理员可在 Kiro 控制台开关 Cloud Sessions（Settings > Kiro Settings），使用外部 IdP 时需在 OIDC 应用中加入官方给出的重定向 URI。 | https://kiro.dev/docs/cloud-sessions/ ；https://kiro.dev/docs/web/identity-center/ | 2026-10-20 |
+| F-44 | 用 Google、GitHub 或 AWS Builder ID 登录时，Kiro 通过 Stripe 处理订阅计费（使用 IAM Identity Center 的企业用户不需要放行 Stripe 域名）；企业订阅按每个已订阅用户按月计费，账单在 AWS Billing and Cost Management 的 Charges by service 中 Kiro 项下。 | https://kiro.dev/docs/privacy-and-security/firewalls/ ；https://kiro.dev/docs/enterprise/billing/ | 2026-10-20 |
+| F-45 | AWS Prescriptive Guidance 有一个 pattern：用本地 MCP 服务器把 IaC 与源代码安全扫描接入 Kiro 等编码助手，给出 `.kiro/settings/mcp.json` 配置示例，代码在 aws-samples/sample-mcp-security-scanner。 | https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/deploy-real-time-coding-security-validation-by-using-an-mcp-server-with-kiro-and-other-coding-assistants.html | 2026-10-20 |
+| F-46 | AWS Prescriptive Guidance 的 agentic AI 治理与架构指南把 Kiro 列为终端用户层的代码助手方案；生成式 AI 安全参考架构（能力 6）对 Kiro 给出 IAM Identity Center、PrivateLink 终端节点、用户活动遥测、客户托管 KMS 密钥等安全建议。 | https://docs.aws.amazon.com/prescriptive-guidance/latest/govern-architect-agentic-ai/gen-ai-end-user-solutions-layer.html ；https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture-generative-ai/ai-apps.html | 2026-10-20 |
 
-### 第 8 节待核实断言的处理结果
+### 需求输入中待核实断言的处理结果
 
 | # | 断言 | 结果 | 依据 / 去向 |
 |---|---|---|---|
@@ -145,6 +148,6 @@ sequenceDiagram
 | 4 | `#File`、`#Folder`、`#Problems`、`#Terminal`、`#Git Diff` | 核实（写法修正） | F-10 官方表格写法为小写 `#file`、`#folder`、`#problems`、`#terminal`、`#git diff`（U-04） |
 | 5 | 域名端点列表，及「不对这些域名做 TLS 解密」的建议 | 端点核实；建议未核实 | 端点 F-22；官方只说明 TLS inspection 是常见原因（F-23），没有「不解密」的正式建议，已删除（U-05） |
 | 6 | 云端会话、Autonomous 模式具体行为 | 核实 | F-13、F-15、F-16；本地 IDE 会话断网行为未查到（U-07） |
-| 7 | Crew、Web、多终端的准确名称、能力与限制 | 核实 | Kiro Crew F-18、Kiro Web F-14、多终端对应官方的 IDE/CLI/Web/Mobile/Crew 多个界面（F-13、F-19、F-20）；「Crew」是否就是负责人所指功能见 OPEN-QUESTIONS |
+| 7 | Crew、Web、多终端的准确名称、能力与限制 | 核实 | Kiro Crew F-18、Kiro Web F-14、多终端对应官方的 IDE/CLI/Web/Mobile/Crew 多个界面（F-13、F-19、F-20）；「Crew」是否就是需求输入所指功能见 OPEN-QUESTIONS |
 | 8 | 新账号订阅数量限制与分批导入的官方做法 | 未核实 | 官方未找到按用户数的订阅上限或分批导入流程；只核实到账号数上限（F-31）与 IAM Identity Center 配额（F-37）（U-10） |
-| 9 | spec 第 8 节第 9 条所指的内部需求跟踪类说法 | 不进入仓库 | U-11 |
+| 9 | 需求输入中提到的内部需求跟踪类说法 | 不进入仓库 | U-11 |

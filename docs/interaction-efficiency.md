@@ -25,7 +25,7 @@
 
 可在一条消息中组合多个，例如 `#terminal #problems 这个构建为什么失败`。
 
-注意：spec 草稿写作 `#File`、`#Folder`、`#Problems`、`#Terminal`、`#Git Diff`，官方提供者表格的写法是小写（U-04）。云端会话中 `#File`/`#Folder`/`#Terminal`/`#Problems` 选择器不可用（F-13）。
+注意：早期草稿写作 `#File`、`#Folder`、`#Problems`、`#Terminal`、`#Git Diff`。官方提供者表格用小写，dev servers 页与云端会话页用首字母大写，官方未说明是否区分大小写（U-04）。云端会话中 `#File`/`#Folder`/`#Terminal`/`#Problems` 选择器不可用（F-13）。
 
 ### Kiro CLI（F-12）
 

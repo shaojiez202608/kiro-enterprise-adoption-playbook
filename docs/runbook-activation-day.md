@@ -26,7 +26,7 @@
 
 1. 对照 `usage-modes.md` 讨论本地、云端会话、Crew 的选择。
 2. （组织已启用 Cloud Sessions 时）从 IDE 的 Agent Focus 或 CLI `--cloud` 启动云端会话，关闭客户端后再从 Web 重新连接查看进度（F-13）。
-3. 讨论网络访问档位和 secrets 的最小化（F-42）。
+3. 讨论网络访问级别和 secrets 的最小化（F-42）。
 
 ## 3. 试用期问题收集与回应流程
 
@@ -38,8 +38,10 @@ flowchart LR
     B -->|用量| E[按 credit-governance 复盘]
     B -->|功能缺失或缺陷| F[整理复现步骤<br/>通过官方渠道反馈]
     D --> G{curl 测试}
-    G -->|握手失败| H[网络团队处理]
-    G -->|握手成功| F
+    G -->|超时或 TLS 错误| H[网络团队处理]
+    G -->|握手成功| J{证书 issuer 是企业 CA？<br/>排查建议，非官方}
+    J -->|是：经过 TLS 检查| H
+    J -->|否| F
     C & E & H & F --> I[每周汇总<br/>更新内部 FAQ]
 ```
 
@@ -53,7 +55,7 @@ flowchart LR
 回应规则：
 
 - 能用矩阵中的官方做法解决的，回复做法与官方链接。
-- 官方当前不支持的，明确回复「当前不支持」，给出矩阵中的替代做法，并通过官方反馈渠道提交（GitHub kirodotdev/Kiro 的 Report a bug / Suggest an idea，或 CLI `/feedback`，F-38）。企业用户可同时联系 AWS Support。
+- 官方明确写了不支持或不可用的，明确回复「当前不支持」；官方没有写明的，回复「官方未说明」（D-19）。两种情况都给出矩阵中的替代做法，并通过官方反馈渠道提交（GitHub kirodotdev/Kiro 的 Report a bug / Suggest an idea，或 CLI `/feedback`，F-38）。企业用户可同时联系 AWS Support。
 - 只记录「已通过官方渠道反馈」和反馈链接；不在任何文档中承诺上线时间。
 
 ## 4. 月度核对付费与活跃用户
@@ -78,7 +80,7 @@ node tools/reconcile-subscriptions.mjs \
 | 分类 | 含义 | 处理 |
 |---|---|---|
 | `active_with_usage` | 已订阅且当月有活动 | 无 |
-| `active_no_usage` | 已订阅（计费）但当月无活动 | 与团队负责人确认是否需要保留；需要停用时按官方方式操作（F-32） |
+| `active_no_usage` | 已订阅（计费）但当月无活动 | 与团队主管确认是否需要保留；需要停用时按官方方式操作（F-32） |
 | `pending` | 已订阅未激活；官方说明 Pending 不计费（F-32） | 提醒用户激活或取消 |
 | `pending_with_usage` | 导出中为 Pending，但当月有活动 | 重新下载导出；检查关联键 |
 | `canceled` | 已取消且当月无活动 | 无 |
