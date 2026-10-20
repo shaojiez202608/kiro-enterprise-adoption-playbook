@@ -1,0 +1,11 @@
+{
+  "_note": "Synthetic data generated for this sample. Not real devices, sites, or customers.",
+  "devices": [
+    { "id": "DEV-0001", "type": "Kiosk terminal", "site": "Site A", "status": "online", "lastHeartbeat": "2026-01-05T08:00:00Z" },
+    { "id": "DEV-0002", "type": "Kiosk terminal", "site": "Site A", "status": "offline", "lastHeartbeat": "2026-01-04T21:15:00Z" },
+    { "id": "DEV-0003", "type": "Vending unit", "site": "Site B", "status": "maintenance", "lastHeartbeat": "2026-01-05T06:30:00Z" },
+    { "id": "DEV-0004", "type": "Vending unit", "site": "Site B", "status": "online", "lastHeartbeat": "2026-01-05T07:55:00Z" },
+    { "id": "DEV-0005", "type": "Payment reader", "site": "Site C", "status": "online", "lastHeartbeat": "2026-01-05T07:58:00Z" },
+    { "id": "DEV-0006", "type": "Payment reader", "site": "Site C", "status": "offline", "lastHeartbeat": "2026-01-03T12:00:00Z" }
+  ]
+}

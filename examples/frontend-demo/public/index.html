@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Device Fleet Board (synthetic demo)</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <h1>Device Fleet Board</h1>
+    <p class="note">Synthetic demo data. Used to show an agent-driven browser check loop.</p>
+
+    <section aria-labelledby="filter-heading">
+      <h2 id="filter-heading">Filter</h2>
+      <label for="status-filter">Status</label>
+      <select id="status-filter" name="status-filter">
+        <option value="all">All</option>
+        <option value="online">Online</option>
+        <option value="offline">Offline</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+      <p id="summary" role="status" aria-live="polite">Loading...</p>
+    </section>
+
+    <section aria-labelledby="devices-heading">
+      <h2 id="devices-heading">Devices</h2>
+      <table id="device-table">
+        <thead>
+          <tr><th scope="col">ID</th><th scope="col">Type</th><th scope="col">Site</th><th scope="col">Status</th><th scope="col">Last heartbeat (UTC)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section aria-labelledby="note-heading">
+      <h2 id="note-heading">Maintenance note</h2>
+      <form id="note-form" novalidate>
+        <label for="note-device">Device</label>
+        <select id="note-device" name="note-device"></select>
+        <label for="note-text">Note (1-200 characters)</label>
+        <textarea id="note-text" name="note-text" rows="3" maxlength="200"></textarea>
+        <button type="submit">Save note</button>
+        <p id="note-error" class="error" role="alert" hidden></p>
+      </form>
+      <ul id="note-list" aria-label="Saved notes"></ul>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
