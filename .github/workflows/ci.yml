@@ -88,8 +88,17 @@ jobs:
       # automated-security-helper v3.7.1 (lightweight tag; commit from git ls-remote)
       ASH_REF: af1206aff596f1288ad066828058b3011de2a998 # pragma: allowlist secret (public git commit hash)
     steps:
+      # Same layout as ASH's own GitHub Actions tutorial: run ASH from a checkout of its repository so
+      # the image build context contains pyproject.toml (running it from an installed package does not).
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
+          path: repo
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          repository: awslabs/automated-security-helper
+          ref: ${{ env.ASH_REF }}
+          path: ash-src
           persist-credentials: false
       - name: Install uv
         run: python3 -m pip install --user "uv==${UV_VERSION}"
@@ -97,10 +106,18 @@ jobs:
       # manifest from GitHub-hosted runners failed twice (unexpected status code), so the Docker Hub copy is used.
       - name: Run ASH in container mode
         run: |
-          "${HOME}/.local/bin/uvx" --from "git+https://github.com/awslabs/automated-security-helper.git@${ASH_REF}" \
-            ash --mode container --source-dir . --output-dir "${RUNNER_TEMP}/ash" \
+          "${HOME}/.local/bin/uv" run --directory ash-src ash --mode container \
+            --source-dir "${GITHUB_WORKSPACE}/repo" --output-dir "${RUNNER_TEMP}/ash" \
             --custom-build-arg "BASE_IMAGE=docker.io/library/python:3.12-slim-bookworm" \
             || echo "ash exited with $?"
+      - name: Keep the ASH report
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ash-report
+          path: ${{ runner.temp }}/ash
+          if-no-files-found: warn
+          retention-days: 14
       - name: Fail on findings or incomplete scanners
         run: |
           python3 - "${RUNNER_TEMP}/ash/ash_aggregated_results.json" <<'PY'
