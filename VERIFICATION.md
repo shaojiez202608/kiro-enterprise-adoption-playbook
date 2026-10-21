@@ -52,7 +52,7 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 | 用真实订阅导出与活动报告运行核对工具 | 无真实数据；只用合成数据 |
 | ASH | **未运行**：本机无 Docker，ASH 及其缺失的扫描器（grype、syft、checkov、cfn-nag、cdk-nag 等）未安装；按项目约定不为此安装大量本地工具。按规范视为未通过。CI 中新增 `ash` job（container 模式，有可处理发现、失败或缺失的扫描器即失败），等 GitHub 上运行后补记结果 |
 | osv-scanner | **未运行**：未安装（brew 安装未完成即停止）。以 `npm audit` 作为 lock 文件漏洞检查的替代，见第 4 节 |
-| CI workflow | **未在 GitHub 运行，仅本地等效执行**（lint、测试、链接、gitleaks + canary 都在本机用同样的命令跑过） |
+| CI workflow | 已在 GitHub 运行，见下文「GitHub CI」 |
 
 ## 4. 安全扫描与静态检查
 
@@ -105,3 +105,11 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 - 不能证明在 Windows 上可用：Windows 分支只有单元测试。
 - 链接检查只证明页面可达，不证明页面内容与事实表一致；事实以第 7 节的核对日期为准。
 - 失败项：本轮无失败的测试或检查；未运行项见第 3 节，按规范视为未通过。
+
+## GitHub CI（2026-10-21）
+
+仓库推送到 GitHub（私有）后，`ci` workflow 在 GitHub 托管 runner（ubuntu-24.04）上运行：run 39525107949，提交 `9579fdc`，全部 job 通过（lint, unit and browser tests；official links reachable；gitleaks full history and canary；ASH）。
+
+ASH v3.7.1 容器模式（基础镜像改用 Docker Hub 上的同名镜像，见 `ash` job）：10/10 个扫描器通过，0 失败，0 缺失；发现共 0 条，可处理 0 条，抑制 0 条。这一结果取代上文本地不完整的 ASH 记录（本机无 Docker，缺 5 个扫描器）。
+
+这不能证明：本项目没有部署验证 workflow。
