@@ -49,7 +49,6 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 | 云端会话、Kiro Web、Kiro Crew 的行为 | 同上；行为来自官方文档 |
 | `cdk synth` / cdk-nag | 无 CDK 应用（D-02、D-03） |
 | AWS 部署与端到端验证 | 不适用（`DEPLOYMENT-LOG.md`） |
-| Holmes 扫描 | 本机没有 Holmes，未运行 |
 | 用真实订阅导出与活动报告运行核对工具 | 无真实数据；只用合成数据 |
 | ASH | **未运行**：本机无 Docker，ASH 及其缺失的扫描器（grype、syft、checkov、cfn-nag、cdk-nag 等）未安装；按项目约定不为此安装大量本地工具。按规范视为未通过。CI 中新增 `ash` job（container 模式，有可处理发现、失败或缺失的扫描器即失败），等 GitHub 上运行后补记结果 |
 | osv-scanner | **未运行**：未安装（brew 安装未完成即停止）。以 `npm audit` 作为 lock 文件漏洞检查的替代，见第 4 节 |
@@ -69,7 +68,6 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 | semgrep 1.181.0 | `uvx semgrep scan --config p/default --metrics off .`（git 跟踪的 68 个文件，255 条规则） | 首次 1 条：`tools/preflight.mjs` 的 `spawn-shell-true`（只在 Windows 上为调用 `npm.cmd` 使用 shell，命令与参数都是常量），已加行内 `nosemgrep` 并写理由；复扫 0 条 |
 | npm audit | `npm audit --prefix examples/frontend-demo`（lock 文件） | found 0 vulnerabilities |
 | osv-scanner、ASH | — | 未运行（见第 3 节） |
-| Holmes | — | 未运行（本机没有） |
 
 ## 5. 链接与端点检查
 
