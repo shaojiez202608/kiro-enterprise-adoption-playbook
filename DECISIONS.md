@@ -32,7 +32,7 @@
 
 | 编号 | 决定 | 备选 | 理由 |
 |---|---|---|---|
-| D-22 | LICENSE 为 MIT-0，版权行 `Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.`；git 作者保持 `shaojiez <shaojiez@example.invalid>` | 个人版权行 | aws-samples 惯例；测试检查版权行 |
+| D-22 | LICENSE 为 MIT-0，版权行 `Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.`；git 作者保持 `shaojiez <shaojiez2026@gmail.com>` | 个人版权行 | aws-samples 惯例；测试检查版权行 |
 | D-23 | 漏洞上报只走 AWS 漏洞上报页面或 aws-security@amazon.com，不开公开 issue；SECURITY.md 写全部署内容、数据处理、控制与实现文件、注意事项、加固步骤、清理 | 只写上报方式 | 统一要求 |
 | D-24 | 账号 ID 占位一律 `111122223333`，其他占位 `<UPPER_SNAKE>`，主机名 `example.com`；内容规则测试只放行 `111122223333` 这一个 12 位数字 | `<ACCOUNT_ID>` | 统一要求；其他 12 位数字仍判失败 |
 | D-25 | 新增标配文件：CHANGELOG、VERSION、THIRD-PARTY-LICENSES、Makefile、AGENTS.md（CLAUDE.md 只写 `@AGENTS.md`）、CODEOWNERS、issue 与 PR 模板、CI、Dependabot、`.gitleaks.toml`。根目录 AGENTS.md 只是给维护本仓库的 AI 助手的说明；Kiro 也会读取 AGENTS.md（F-06），其中的边界同样适用 | 不加 | 统一要求 |

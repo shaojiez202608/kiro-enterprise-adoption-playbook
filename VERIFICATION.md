@@ -95,7 +95,7 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 
 ## 8. 仓库历史
 
-所有提交（含历史提交）的作者与提交者统一为同一身份 `shaojiez <shaojiez@example.invalid>`。对全部提交的补丁与提交信息做全文检索（大小写不敏感），不含内部前缀和本机绝对路径；`git log --format='%an <%ae>|%cn <%ce>' | sort -u` 只输出一行。
+所有提交（含历史提交）的作者与提交者统一为同一身份 `shaojiez <shaojiez2026@gmail.com>`。对全部提交的补丁与提交信息做全文检索（大小写不敏感），不含内部前缀和本机绝对路径；`git log --format='%an <%ae>|%cn <%ce>' | sort -u` 只输出一行。
 
 全部 23 个提交的主题都符合 Conventional Commits（`type: subject` 或 `type(scope): subject`）。为统一加 scope 的历史重写被本机权限拦下，未重试（D-33），因此本文件中的提交哈希有效。
 
