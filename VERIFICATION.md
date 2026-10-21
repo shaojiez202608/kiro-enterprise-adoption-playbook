@@ -3,7 +3,7 @@
 | 项目 | 内容 |
 |---|---|
 | 运行日期 | 2026-10-21（事实核对日期见第 7 节） |
-| 被验证的提交 | `41e8725`（第 1、4、5、6、8 节的结果都在这个提交上运行；本文件在其后的提交中记录，tag `v0.1.0` 指向记录提交） |
+| 被验证的提交 | `dd5955b`（第 1、4、5、6、8 节的结果都在这个提交上运行；本文件在其后的提交中记录，tag `v0.1.0` 指向记录提交） |
 | 区域 | 不适用（不部署）；只读残留核对见第 6 节 |
 | 配置 | 默认参数：`PORT=4173`、`KIRO_UI_VERIFY_MAX_ATTEMPTS=2`、`@playwright/mcp@0.0.83`、`@playwright/test@1.64.1`；模型：不适用（未在 Kiro 内运行，未调用任何模型） |
 | 环境 | macOS（arm64），Node v24.14.0，npm 11.9.0，Playwright 1.64.1（使用本机 Playwright 缓存中已有的 Chromium，未做全局安装）；本机没有 Docker |
@@ -23,7 +23,7 @@
 
 ## 2. Stop hook 的本机演练：dev server 已在运行时（不在 Kiro 内）
 
-演练于 2026-10-20 在 hook 修复提交（`cdc9350`）的代码上进行；此后 `examples/scripts/kiro-ui-verify.mjs` 与 `playwright.config.mjs` 没有再改动，本轮未重做演练（集成测试在 `41e8725` 上覆盖了 dev server 已占用端口的场景）。
+演练于 2026-10-20 在 hook 修复提交（`cdc9350`）的代码上进行；此后 `examples/scripts/kiro-ui-verify.mjs` 与 `playwright.config.mjs` 没有再改动，本轮未重做演练（集成测试在 `dd5955b` 上覆盖了 dev server 已占用端口的场景）。
 
 做法：把 `examples/` 复制到系统临时目录并 `git init` 提交；在后台运行 `npm --prefix frontend-demo start`（监听 `127.0.0.1:4173`，模拟 steering 要求的常驻 dev server）；修改 `frontend-demo/public/` 下的文件后，用管道把模拟的 Stop 事件 JSON（`{"session_id": "...", "cwd": "..."}`）传给 `node scripts/kiro-ui-verify.mjs`。演练结束后停止 dev server 并删除临时目录。
 
@@ -64,7 +64,7 @@ Kiro 是否按文档把 stderr 回传给 agent、IDE 中退出码 1/3 是否开�
 | gitleaks 8.30.1 | 全部历史：`make scan`（`gitleaks git --log-opts="--all"`，23 个提交） | no leaks found |
 | gitleaks canary | `make scan`：运行时生成一个假的访问密钥写入临时目录，用同一配置扫描，必须报出（退出码 42） | **检出**（证明扫描器与配置能报出泄漏） |
 | detect-secrets 1.5.0 | 当前工作区：`uvx detect-secrets scan --exclude-files 'node_modules/.*' --exclude-files 'package-lock.json' --exclude-files 'test-results/.*' .` | 0 条结果（CI 中 gitleaks 发布包的 SHA-256 校验和、ASH 标签对应的提交哈希两行用行内 pragma 放行，理由见 `SECURITY-NOTES.md`） |
-| detect-secrets 1.5.0 | 全部历史：`git archive` 导出全部 23 个提交的文件树，在非 git 目录中以 `--all-files` 扫描 | 3 条，全部是误报：提交 `007ff66`、`2e4ee73` 中的公开校验和（在 `f575ca1` 加 pragma），`4411b7a` 中的 ASH 提交哈希（在 `41e8725` 加 pragma）。说明：上一轮的历史扫描未加 `--all-files`，实际没有扫描到文件，结论无效，本轮已重做 |
+| detect-secrets 1.5.0 | 全部历史：`git archive` 导出全部 23 个提交的文件树，在非 git 目录中以 `--all-files` 扫描 | 3 条，全部是误报：提交 `013cfba`、`a5087f9` 中的公开校验和（在 `4ef539a` 加 pragma），`8e01acb` 中的 ASH 提交哈希（在 `dd5955b` 加 pragma）。说明：上一轮的历史扫描未加 `--all-files`，实际没有扫描到文件，结论无效，本轮已重做 |
 | zizmor 1.31.1 | `uvx zizmor --gh-token … .github/workflows`（在线模式） | No findings |
 | semgrep 1.181.0 | `uvx semgrep scan --config p/default --metrics off .`（git 跟踪的 68 个文件，255 条规则） | 首次 1 条：`tools/preflight.mjs` 的 `spawn-shell-true`（只在 Windows 上为调用 `npm.cmd` 使用 shell，命令与参数都是常量），已加行内 `nosemgrep` 并写理由；复扫 0 条 |
 | npm audit | `npm audit --prefix examples/frontend-demo`（lock 文件） | found 0 vulnerabilities |
