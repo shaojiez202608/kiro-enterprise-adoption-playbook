@@ -102,13 +102,24 @@ jobs:
           persist-credentials: false
       - name: Install uv
         run: python3 -m pip install --user "uv==${UV_VERSION}"
-      # ASH's default base image is the same python:3.12-slim-bookworm tag on public.ecr.aws; pulling its
-      # manifest from GitHub-hosted runners failed twice (unexpected status code), so the Docker Hub copy is used.
-      - name: Run ASH in container mode
+      # ASH's default base image is python:3.12-slim-bookworm on public.ecr.aws. Anonymous pulls from
+      # GitHub-hosted runners hit "429 Too Many Requests", and `ash --custom-build-arg` is not passed to
+      # the scan-mode image build. So the image is built here from the Docker Hub copy of the same tag,
+      # with the build arguments ASH itself uses, and ASH runs it with --no-build.
+      - name: Build the ASH image
         run: |
-          "${HOME}/.local/bin/uv" run --directory ash-src ash --mode container \
+          docker build --target ci --tag automated-security-helper:ci \
+            --build-arg "BASE_IMAGE=docker.io/library/python:3.12-slim-bookworm" \
+            --build-arg "UID=$(id -u)" --build-arg "GID=$(id -g)" \
+            --build-arg INSTALL_ASH_REVISION=LOCAL --build-arg OFFLINE=NO \
+            --build-arg OFFLINE_SEMGREP_RULESETS=p/ci \
+            --file ash-src/Dockerfile ash-src
+      - name: Run ASH in container mode
+        env:
+          ASH_IMAGE_NAME: automated-security-helper:ci
+        run: |
+          "${HOME}/.local/bin/uv" run --directory ash-src ash --mode container --no-build --build-target ci \
             --source-dir "${GITHUB_WORKSPACE}/repo" --output-dir "${RUNNER_TEMP}/ash" \
-            --custom-build-arg "BASE_IMAGE=docker.io/library/python:3.12-slim-bookworm" \
             || echo "ash exited with $?"
       - name: Keep the ASH report
         if: always()
