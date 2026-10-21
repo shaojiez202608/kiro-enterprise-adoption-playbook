@@ -15,4 +15,4 @@
 | Q-09 | 组织管理员是否关闭了 MCP 或启用了 MCP registry（F-36）。若启用 registry，需要把 Playwright MCP 加入允许清单，FR-2 的示例才能使用 | 在矩阵和启动日准备中列为前提 | 组织管理员 |
 | Q-11 | 云端会话（含 Kiro Web）是否运行仓库 `.kiro/hooks/` 中的 hooks：hooks 页写 Web 会话不运行（F-07），云端会话页写仓库中提交的 hooks 自动生效（F-41） | 两种说法都原样写出；示例不依赖云端会话中的 hook（`docs/usage-modes.md`） | 维护者；必要时通过官方反馈渠道确认（F-38） |
 | Q-12 | Kiro IDE 中 `Stop` hook 以退出码 1 或 3 结束时，是否开始新的 agent 回合、stderr 是否也显示给用户。IDE 文档只写「非零退出时 stderr 发送给 agent」（F-08），CLI 文档对 `Stop` 的各退出码有分别说明 | hook 脚本按两份文档的交集设计（D-08），未在 Kiro 内验证 | 维护者（在 Kiro IDE 中试运行一次即可确认） |
-| Q-13 | `.github/CODEOWNERS` 中的负责人 GitHub 账号。目前用占位 `@<MAINTAINER_GITHUB_HANDLE>`，发布前必须替换，否则敏感文件的强制评审不生效 | 占位 | 维护者 |
+| Q-13 | `.github/CODEOWNERS` 中的负责人 GitHub 账号 | 已关闭：设为 `@shaojiez202608` | 维护者 |

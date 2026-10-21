@@ -35,7 +35,7 @@
 | B-3b | AGENTS.md + CLAUDE.md | 需修改 → 已修改 | `AGENTS.md:32,40,46`、`CLAUDE.md:1` | 角色、常用命令、git 流程、Always / Ask first / Never；CLAUDE.md 只有 `@AGENTS.md`（测试检查） |
 | B-3c | Makefile | 需修改 → 已修改 | `Makefile` | 统一入口：`preflight lint test synth deploy verify destroy verify-cleanup scan`，另有 `setup`、`links`、`clean`。`synth`、`deploy`、`destroy` 明确输出「不适用」；CI 用到的目标只检查不改动 |
 | B-3d | `.gitignore` / `.dockerignore`（`.example` 例外） | 需修改 → 已修改 | `.gitignore:8-12,17-22` | 补上 `.example` 例外与本地缓存；`.dockerignore` 不需要（没有 Docker 构建） |
-| B-3e | CODEOWNERS | 需修改 → 已修改 | `.github/CODEOWNERS` | CI、扫描配置、AI 配置、`.kiro/` 与 hook 脚本；负责人用 `@<MAINTAINER_GITHUB_HANDLE>`，记入 Q-13 |
+| B-3e | CODEOWNERS | 需修改 → 已修改 | `.github/CODEOWNERS` | CI、扫描配置、AI 配置、`.kiro/` 与 hook 脚本；负责人为 `@shaojiez202608`（Q-13 已关闭） |
 | B-4 | DECISIONS / OPEN-QUESTIONS / SECURITY-NOTES / THREAT_MODEL（DRAFT）/ VERIFICATION / DEPLOYMENT-LOG | 需修改 → 已修改 | `THREAT_MODEL.md:3` | 文件都已存在；THREAT_MODEL 顶部加 `Status: DRAFT`（测试检查）；DECISIONS 增加 D-22 至 D-33 |
 
 ## C. 配置与部署

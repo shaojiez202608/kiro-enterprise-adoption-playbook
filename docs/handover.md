@@ -16,7 +16,7 @@
 ## 接手后先做
 
 1. 重新打开 `docs/architecture.md` 中的 F-xx 链接核对内容（官方文档更新频繁），并运行 `make verify`（lint、测试、链接）与 `make scan`。
-2. 把 `.github/CODEOWNERS` 中的 `@<MAINTAINER_GITHUB_HANDLE>` 换成真实账号（Q-13）。
+2. `.github/CODEOWNERS` 的负责人已设为 `@shaojiez202608`；如维护者变更，同步修改该文件。
 3. 处理 `OPEN-QUESTIONS.md`，尤其是 Q-01（Crew）、Q-02（订阅数量限制来源）、Q-04（导出表头）。
 4. 用真实（脱敏）表头试运行核对工具，确认关联键。
 
